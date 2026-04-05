@@ -1,1 +1,9 @@
-<Solution />
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Origin.Identity.API/Origin.Identity.API.csproj" Id="9dcda41c-f2cc-4c37-be7f-d7cd1f81fea2" />
+    <Project Path="src/Origin.Identity.Application/Origin.Identity.Application.csproj" Id="0afd0664-c2fd-4634-88e7-e47ac8e3bd04" />
+    <Project Path="src/Origin.Identity.Contracts/Origin.Identity.Contracts.csproj" Id="6cb2122e-9ea9-47f4-8d6d-96f8634d9beb" />
+    <Project Path="src/Origin.Identity.Domain/Origin.Identity.Domain.csproj" Id="bbad0676-78ec-4da9-84cb-17cea315a661" />
+    <Project Path="src/Origin.Identity.Infrastructure/Origin.Identity.Infrastructure.csproj" Id="98a71f31-6a5f-48be-8297-70e69c23d48f" />
+  </Folder>
+</Solution>
