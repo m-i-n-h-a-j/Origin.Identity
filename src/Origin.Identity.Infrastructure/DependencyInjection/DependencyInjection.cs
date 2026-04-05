@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Origin.Identity.Application.Services.Auth;
 using Origin.Identity.Infrastructure.Identity;
+using Origin.Identity.Infrastructure.Persistence;
+using Origin.Identity.Infrastructure.Services.Auth;
 
 namespace Origin.Identity.Infrastructure.DependencyInjection
 {
@@ -16,7 +18,7 @@ namespace Origin.Identity.Infrastructure.DependencyInjection
         {
             var connectionString = configuration.GetConnectionString("DefaultConnection");
 
-            services.AddDbContext<IdentityDbContext>(options =>
+            services.AddDbContext<ApplicationIdentityDbContext>(options =>
             {
                 options.UseNpgsql(connectionString);
 
@@ -34,14 +36,14 @@ namespace Origin.Identity.Infrastructure.DependencyInjection
                     options.Password.RequireLowercase = true;
                     options.Password.RequireNonAlphanumeric = false;
                 })
-                .AddEntityFrameworkStores<IdentityDbContext>()
+                .AddEntityFrameworkStores<ApplicationIdentityDbContext>()
                 .AddDefaultTokenProviders();
 
             services
                 .AddOpenIddict()
                 .AddCore(options =>
                 {
-                    options.UseEntityFrameworkCore().UseDbContext<IdentityDbContext>();
+                    options.UseEntityFrameworkCore().UseDbContext<ApplicationIdentityDbContext>();
                 })
                 .AddServer(options =>
                 {
@@ -64,6 +66,8 @@ namespace Origin.Identity.Infrastructure.DependencyInjection
                     options.UseLocalServer();
                     options.UseAspNetCore();
                 });
+
+            services.AddScoped<IAuthService, AuthService>();
 
             return services;
         }

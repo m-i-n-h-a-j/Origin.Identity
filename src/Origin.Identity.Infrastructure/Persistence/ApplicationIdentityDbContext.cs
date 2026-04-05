@@ -5,7 +5,9 @@ using Origin.Identity.Infrastructure.Identity;
 
 namespace Origin.Identity.Infrastructure.Persistence
 {
-    public sealed class IdentityDbContext(DbContextOptions<IdentityDbContext> options)
+    public sealed class ApplicationIdentityDbContext(
+        DbContextOptions<ApplicationIdentityDbContext> options
+    )
         : IdentityDbContext<
             ApplicationUser,
             ApplicationRole,
@@ -14,7 +16,8 @@ namespace Origin.Identity.Infrastructure.Persistence
             IdentityUserRole<Guid>,
             IdentityUserLogin<Guid>,
             IdentityRoleClaim<Guid>,
-            IdentityUserToken<Guid>
+            IdentityUserToken<Guid>,
+            IdentityUserPasskey<Guid>
         >(options)
     {
         protected override void OnModelCreating(ModelBuilder builder)
