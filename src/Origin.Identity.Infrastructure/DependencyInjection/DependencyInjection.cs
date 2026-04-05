@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using OpenIddict.Abstractions;
 using Origin.Identity.Application.Services.Auth;
 using Origin.Identity.Infrastructure.Identity;
 using Origin.Identity.Infrastructure.Persistence;
@@ -47,19 +49,36 @@ namespace Origin.Identity.Infrastructure.DependencyInjection
                 })
                 .AddServer(options =>
                 {
+                    options.SetAuthorizationEndpointUris("/connect/authorize");
                     options.SetTokenEndpointUris("/connect/token");
+                    options.SetRevocationEndpointUris("/connect/revocation");
+                    options.SetEndSessionEndpointUris("/connect/logout");
 
-                    options.AllowPasswordFlow();
+                    options.AllowAuthorizationCodeFlow().RequireProofKeyForCodeExchange();
+
                     options.AllowRefreshTokenFlow();
 
-                    options.AcceptAnonymousClients();
+                    options.RegisterScopes(
+                        OpenIddictConstants.Scopes.OpenId,
+                        OpenIddictConstants.Scopes.Profile,
+                        OpenIddictConstants.Scopes.Email,
+                        OpenIddictConstants.Scopes.OfflineAccess,
+                        "api"
+                    );
 
-                    options.RegisterScopes("api");
+                    options.SetAccessTokenLifetime(TimeSpan.FromMinutes(10));
+                    options.SetRefreshTokenLifetime(TimeSpan.FromDays(7));
+
+                    options.DisableAccessTokenEncryption();
 
                     options.AddDevelopmentEncryptionCertificate();
                     options.AddDevelopmentSigningCertificate();
 
-                    options.UseAspNetCore().EnableTokenEndpointPassthrough();
+                    options
+                        .UseAspNetCore()
+                        .EnableAuthorizationEndpointPassthrough()
+                        .EnableTokenEndpointPassthrough()
+                        .EnableEndSessionEndpointPassthrough();
                 })
                 .AddValidation(options =>
                 {
