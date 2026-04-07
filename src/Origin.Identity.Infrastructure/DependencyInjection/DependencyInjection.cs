@@ -1,8 +1,11 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using System.Diagnostics.Eventing.Reader;
+using System.Security.Cryptography.X509Certificates;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using OpenIddict.Abstractions;
+using OpenIddict.Validation.AspNetCore;
 using Origin.Identity.Application.Services.Auth;
 using Origin.Identity.Infrastructure.Identity;
 using Origin.Identity.Infrastructure.Persistence;
@@ -59,34 +62,58 @@ namespace Origin.Identity.Infrastructure.DependencyInjection
                     options.SetTokenEndpointUris("/connect/token");
                     options.SetRevocationEndpointUris("/connect/revocation");
                     options.SetEndSessionEndpointUris("/connect/logout");
+                    options.SetUserInfoEndpointUris("/connect/userinfo");
+                    options.SetIntrospectionEndpointUris("/connect/introspect");
 
                     options.AllowAuthorizationCodeFlow().RequireProofKeyForCodeExchange();
                     options.AllowRefreshTokenFlow();
+                    options.UseReferenceRefreshTokens();
 
                     options.RegisterScopes(
                         OpenIddictConstants.Scopes.OpenId,
                         OpenIddictConstants.Scopes.Profile,
                         OpenIddictConstants.Scopes.Email,
                         OpenIddictConstants.Scopes.OfflineAccess,
-                        "api"
+                        "origin_api"
                     );
 
                     options.SetAccessTokenLifetime(TimeSpan.FromMinutes(10));
                     options.SetRefreshTokenLifetime(TimeSpan.FromDays(7));
 
-                    options.DisableAccessTokenEncryption();
+                    if (isDevelopment)
+                    {
+                        options.DisableAccessTokenEncryption();
+                        options.AddDevelopmentEncryptionCertificate();
+                        options.AddDevelopmentSigningCertificate();
+                    }
+                    else
+                    {
+                        var signingCertificate = X509CertificateLoader.LoadPkcs12FromFile(
+                            configuration["OpenIddict:SigningCertificate:Path"]!,
+                            configuration["OpenIddict:SigningCertificate:Password"]
+                        );
 
-                    options.AddDevelopmentEncryptionCertificate();
-                    options.AddDevelopmentSigningCertificate();
+                        var encryptionCertificate = X509CertificateLoader.LoadPkcs12FromFile(
+                            configuration["OpenIddict:EncryptionCertificate:Path"]!,
+                            configuration["OpenIddict:EncryptionCertificate:Password"]
+                        );
+
+                        options.AddSigningCertificate(signingCertificate);
+                        options.AddEncryptionCertificate(encryptionCertificate);
+                    }
 
                     options
                         .UseAspNetCore()
                         .EnableAuthorizationEndpointPassthrough()
                         .EnableTokenEndpointPassthrough()
-                        .EnableEndSessionEndpointPassthrough();
+                        .EnableEndSessionEndpointPassthrough()
+                        .EnableUserInfoEndpointPassthrough();
                 })
                 .AddValidation(options =>
                 {
+                    services.AddAuthentication(
+                        OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme
+                    );
                     options.UseLocalServer();
                     options.UseAspNetCore();
                 });
