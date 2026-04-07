@@ -10,8 +10,12 @@ namespace Origin.Identity.Infrastructure.Persistence
         {
             var optionsBuilder = new DbContextOptionsBuilder<ApplicationIdentityDbContext>();
 
+            //optionsBuilder.UseNpgsql(
+            //    "Host=10.1.248.10;Port=5432;Database=origin_identity;Username=postgres;Password=pgsu123#"
+            //);
+
             optionsBuilder.UseNpgsql(
-                "Host=10.1.248.10;Port=5432;Database=origin_identity;Username=postgres;Password=pgsu123#"
+                "Host=localhost;Port=5432;Database=origin_identity;Username=postgres;Password=postgres"
             );
 
             optionsBuilder.UseOpenIddict();

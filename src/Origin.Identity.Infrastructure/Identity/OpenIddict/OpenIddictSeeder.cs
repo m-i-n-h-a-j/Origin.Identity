@@ -27,7 +27,7 @@ namespace Origin.Identity.Infrastructure.Identity.OpenIddict
 
             if (apiScope is null)
             {
-                await scopeManager.CreateAsync(apiScopeDescriptor);
+                // await scopeManager.CreateAsync(apiScopeDescriptor);
             }
             else
             {
@@ -72,7 +72,7 @@ namespace Origin.Identity.Infrastructure.Identity.OpenIddict
 
             if (postmanApplication is null)
             {
-                await applicationManager.CreateAsync(postmanDescriptor);
+                // await applicationManager.CreateAsync(postmanDescriptor);
             }
             else
             {
