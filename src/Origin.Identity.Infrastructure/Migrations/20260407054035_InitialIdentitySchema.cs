@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
@@ -12,11 +11,9 @@ namespace Origin.Identity.Infrastructure.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.EnsureSchema(
-                name: "openid");
+            migrationBuilder.EnsureSchema(name: "openid");
 
-            migrationBuilder.EnsureSchema(
-                name: "identity");
+            migrationBuilder.EnsureSchema(name: "identity");
 
             migrationBuilder.CreateTable(
                 name: "Applications",
@@ -38,12 +35,13 @@ namespace Origin.Identity.Infrastructure.Migrations
                     Properties = table.Column<string>(type: "text", nullable: true),
                     RedirectUris = table.Column<string>(type: "text", nullable: true),
                     Requirements = table.Column<string>(type: "text", nullable: true),
-                    Settings = table.Column<string>(type: "text", nullable: true)
+                    Settings = table.Column<string>(type: "text", nullable: true),
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Applications", x => x.Id);
-                });
+                }
+            );
 
             migrationBuilder.CreateTable(
                 name: "Roles",
@@ -51,14 +49,23 @@ namespace Origin.Identity.Infrastructure.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Name = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
-                    NormalizedName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
-                    ConcurrencyStamp = table.Column<string>(type: "text", nullable: true)
+                    Name = table.Column<string>(
+                        type: "character varying(256)",
+                        maxLength: 256,
+                        nullable: true
+                    ),
+                    NormalizedName = table.Column<string>(
+                        type: "character varying(256)",
+                        maxLength: 256,
+                        nullable: true
+                    ),
+                    ConcurrencyStamp = table.Column<string>(type: "text", nullable: true),
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Roles", x => x.Id);
-                });
+                }
+            );
 
             migrationBuilder.CreateTable(
                 name: "Scopes",
@@ -73,12 +80,13 @@ namespace Origin.Identity.Infrastructure.Migrations
                     DisplayNames = table.Column<string>(type: "text", nullable: true),
                     Name = table.Column<string>(type: "text", nullable: true),
                     Properties = table.Column<string>(type: "text", nullable: true),
-                    Resources = table.Column<string>(type: "text", nullable: true)
+                    Resources = table.Column<string>(type: "text", nullable: true),
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Scopes", x => x.Id);
-                });
+                }
+            );
 
             migrationBuilder.CreateTable(
                 name: "Users",
@@ -86,15 +94,45 @@ namespace Origin.Identity.Infrastructure.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    FirstName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    LastName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    FirstName = table.Column<string>(
+                        type: "character varying(100)",
+                        maxLength: 100,
+                        nullable: false
+                    ),
+                    LastName = table.Column<string>(
+                        type: "character varying(100)",
+                        maxLength: 100,
+                        nullable: false
+                    ),
                     IsActive = table.Column<bool>(type: "boolean", nullable: false),
-                    CreatedAtUtc = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    LastLoginAtUtc = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    UserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
-                    NormalizedUserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
-                    Email = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
-                    NormalizedEmail = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
+                    CreatedAtUtc = table.Column<DateTime>(
+                        type: "timestamp with time zone",
+                        nullable: false
+                    ),
+                    LastLoginAtUtc = table.Column<DateTime>(
+                        type: "timestamp with time zone",
+                        nullable: true
+                    ),
+                    UserName = table.Column<string>(
+                        type: "character varying(256)",
+                        maxLength: 256,
+                        nullable: true
+                    ),
+                    NormalizedUserName = table.Column<string>(
+                        type: "character varying(256)",
+                        maxLength: 256,
+                        nullable: true
+                    ),
+                    Email = table.Column<string>(
+                        type: "character varying(256)",
+                        maxLength: 256,
+                        nullable: true
+                    ),
+                    NormalizedEmail = table.Column<string>(
+                        type: "character varying(256)",
+                        maxLength: 256,
+                        nullable: true
+                    ),
                     EmailConfirmed = table.Column<bool>(type: "boolean", nullable: false),
                     PasswordHash = table.Column<string>(type: "text", nullable: true),
                     SecurityStamp = table.Column<string>(type: "text", nullable: true),
@@ -102,14 +140,18 @@ namespace Origin.Identity.Infrastructure.Migrations
                     PhoneNumber = table.Column<string>(type: "text", nullable: true),
                     PhoneNumberConfirmed = table.Column<bool>(type: "boolean", nullable: false),
                     TwoFactorEnabled = table.Column<bool>(type: "boolean", nullable: false),
-                    LockoutEnd = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
+                    LockoutEnd = table.Column<DateTimeOffset>(
+                        type: "timestamp with time zone",
+                        nullable: true
+                    ),
                     LockoutEnabled = table.Column<bool>(type: "boolean", nullable: false),
-                    AccessFailedCount = table.Column<int>(type: "integer", nullable: false)
+                    AccessFailedCount = table.Column<int>(type: "integer", nullable: false),
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Users", x => x.Id);
-                });
+                }
+            );
 
             migrationBuilder.CreateTable(
                 name: "Authorizations",
@@ -119,12 +161,15 @@ namespace Origin.Identity.Infrastructure.Migrations
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     ApplicationId = table.Column<Guid>(type: "uuid", nullable: true),
                     ConcurrencyToken = table.Column<string>(type: "text", nullable: true),
-                    CreationDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    CreationDate = table.Column<DateTime>(
+                        type: "timestamp with time zone",
+                        nullable: true
+                    ),
                     Properties = table.Column<string>(type: "text", nullable: true),
                     Scopes = table.Column<string>(type: "text", nullable: true),
                     Status = table.Column<string>(type: "text", nullable: true),
                     Subject = table.Column<string>(type: "text", nullable: true),
-                    Type = table.Column<string>(type: "text", nullable: true)
+                    Type = table.Column<string>(type: "text", nullable: true),
                 },
                 constraints: table =>
                 {
@@ -134,19 +179,25 @@ namespace Origin.Identity.Infrastructure.Migrations
                         column: x => x.ApplicationId,
                         principalSchema: "openid",
                         principalTable: "Applications",
-                        principalColumn: "Id");
-                });
+                        principalColumn: "Id"
+                    );
+                }
+            );
 
             migrationBuilder.CreateTable(
                 name: "RoleClaims",
                 schema: "identity",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Id = table
+                        .Column<int>(type: "integer", nullable: false)
+                        .Annotation(
+                            "Npgsql:ValueGenerationStrategy",
+                            NpgsqlValueGenerationStrategy.IdentityByDefaultColumn
+                        ),
                     RoleId = table.Column<Guid>(type: "uuid", nullable: false),
                     ClaimType = table.Column<string>(type: "text", nullable: true),
-                    ClaimValue = table.Column<string>(type: "text", nullable: true)
+                    ClaimValue = table.Column<string>(type: "text", nullable: true),
                 },
                 constraints: table =>
                 {
@@ -157,19 +208,25 @@ namespace Origin.Identity.Infrastructure.Migrations
                         principalSchema: "identity",
                         principalTable: "Roles",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
+                        onDelete: ReferentialAction.Cascade
+                    );
+                }
+            );
 
             migrationBuilder.CreateTable(
                 name: "UserClaims",
                 schema: "identity",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Id = table
+                        .Column<int>(type: "integer", nullable: false)
+                        .Annotation(
+                            "Npgsql:ValueGenerationStrategy",
+                            NpgsqlValueGenerationStrategy.IdentityByDefaultColumn
+                        ),
                     UserId = table.Column<Guid>(type: "uuid", nullable: false),
                     ClaimType = table.Column<string>(type: "text", nullable: true),
-                    ClaimValue = table.Column<string>(type: "text", nullable: true)
+                    ClaimValue = table.Column<string>(type: "text", nullable: true),
                 },
                 constraints: table =>
                 {
@@ -180,8 +237,10 @@ namespace Origin.Identity.Infrastructure.Migrations
                         principalSchema: "identity",
                         principalTable: "Users",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
+                        onDelete: ReferentialAction.Cascade
+                    );
+                }
+            );
 
             migrationBuilder.CreateTable(
                 name: "UserLogins",
@@ -191,7 +250,7 @@ namespace Origin.Identity.Infrastructure.Migrations
                     LoginProvider = table.Column<string>(type: "text", nullable: false),
                     ProviderKey = table.Column<string>(type: "text", nullable: false),
                     ProviderDisplayName = table.Column<string>(type: "text", nullable: true),
-                    UserId = table.Column<Guid>(type: "uuid", nullable: false)
+                    UserId = table.Column<Guid>(type: "uuid", nullable: false),
                 },
                 constraints: table =>
                 {
@@ -202,8 +261,10 @@ namespace Origin.Identity.Infrastructure.Migrations
                         principalSchema: "identity",
                         principalTable: "Users",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
+                        onDelete: ReferentialAction.Cascade
+                    );
+                }
+            );
 
             migrationBuilder.CreateTable(
                 name: "UserRoles",
@@ -211,7 +272,7 @@ namespace Origin.Identity.Infrastructure.Migrations
                 columns: table => new
                 {
                     UserId = table.Column<Guid>(type: "uuid", nullable: false),
-                    RoleId = table.Column<Guid>(type: "uuid", nullable: false)
+                    RoleId = table.Column<Guid>(type: "uuid", nullable: false),
                 },
                 constraints: table =>
                 {
@@ -222,15 +283,18 @@ namespace Origin.Identity.Infrastructure.Migrations
                         principalSchema: "identity",
                         principalTable: "Roles",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Cascade
+                    );
                     table.ForeignKey(
                         name: "FK_UserRoles_Users_UserId",
                         column: x => x.UserId,
                         principalSchema: "identity",
                         principalTable: "Users",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
+                        onDelete: ReferentialAction.Cascade
+                    );
+                }
+            );
 
             migrationBuilder.CreateTable(
                 name: "UserTokens",
@@ -240,19 +304,29 @@ namespace Origin.Identity.Infrastructure.Migrations
                     UserId = table.Column<Guid>(type: "uuid", nullable: false),
                     LoginProvider = table.Column<string>(type: "text", nullable: false),
                     Name = table.Column<string>(type: "text", nullable: false),
-                    Value = table.Column<string>(type: "text", nullable: true)
+                    Value = table.Column<string>(type: "text", nullable: true),
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_UserTokens", x => new { x.UserId, x.LoginProvider, x.Name });
+                    table.PrimaryKey(
+                        "PK_UserTokens",
+                        x => new
+                        {
+                            x.UserId,
+                            x.LoginProvider,
+                            x.Name,
+                        }
+                    );
                     table.ForeignKey(
                         name: "FK_UserTokens_Users_UserId",
                         column: x => x.UserId,
                         principalSchema: "identity",
                         principalTable: "Users",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
+                        onDelete: ReferentialAction.Cascade
+                    );
+                }
+            );
 
             migrationBuilder.CreateTable(
                 name: "Tokens",
@@ -263,15 +337,24 @@ namespace Origin.Identity.Infrastructure.Migrations
                     ApplicationId = table.Column<Guid>(type: "uuid", nullable: true),
                     AuthorizationId = table.Column<Guid>(type: "uuid", nullable: true),
                     ConcurrencyToken = table.Column<string>(type: "text", nullable: true),
-                    CreationDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    ExpirationDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    CreationDate = table.Column<DateTime>(
+                        type: "timestamp with time zone",
+                        nullable: true
+                    ),
+                    ExpirationDate = table.Column<DateTime>(
+                        type: "timestamp with time zone",
+                        nullable: true
+                    ),
                     Payload = table.Column<string>(type: "text", nullable: true),
                     Properties = table.Column<string>(type: "text", nullable: true),
-                    RedemptionDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    RedemptionDate = table.Column<DateTime>(
+                        type: "timestamp with time zone",
+                        nullable: true
+                    ),
                     ReferenceId = table.Column<string>(type: "text", nullable: true),
                     Status = table.Column<string>(type: "text", nullable: true),
                     Subject = table.Column<string>(type: "text", nullable: true),
-                    Type = table.Column<string>(type: "text", nullable: true)
+                    Type = table.Column<string>(type: "text", nullable: true),
                 },
                 constraints: table =>
                 {
@@ -281,124 +364,115 @@ namespace Origin.Identity.Infrastructure.Migrations
                         column: x => x.ApplicationId,
                         principalSchema: "openid",
                         principalTable: "Applications",
-                        principalColumn: "Id");
+                        principalColumn: "Id"
+                    );
                     table.ForeignKey(
                         name: "FK_Tokens_Authorizations_AuthorizationId",
                         column: x => x.AuthorizationId,
                         principalSchema: "openid",
                         principalTable: "Authorizations",
-                        principalColumn: "Id");
-                });
+                        principalColumn: "Id"
+                    );
+                }
+            );
 
             migrationBuilder.CreateIndex(
                 name: "IX_Authorizations_ApplicationId",
                 schema: "openid",
                 table: "Authorizations",
-                column: "ApplicationId");
+                column: "ApplicationId"
+            );
 
             migrationBuilder.CreateIndex(
                 name: "IX_RoleClaims_RoleId",
                 schema: "identity",
                 table: "RoleClaims",
-                column: "RoleId");
+                column: "RoleId"
+            );
 
             migrationBuilder.CreateIndex(
                 name: "RoleNameIndex",
                 schema: "identity",
                 table: "Roles",
                 column: "NormalizedName",
-                unique: true);
+                unique: true
+            );
 
             migrationBuilder.CreateIndex(
                 name: "IX_Tokens_ApplicationId",
                 schema: "openid",
                 table: "Tokens",
-                column: "ApplicationId");
+                column: "ApplicationId"
+            );
 
             migrationBuilder.CreateIndex(
                 name: "IX_Tokens_AuthorizationId",
                 schema: "openid",
                 table: "Tokens",
-                column: "AuthorizationId");
+                column: "AuthorizationId"
+            );
 
             migrationBuilder.CreateIndex(
                 name: "IX_UserClaims_UserId",
                 schema: "identity",
                 table: "UserClaims",
-                column: "UserId");
+                column: "UserId"
+            );
 
             migrationBuilder.CreateIndex(
                 name: "IX_UserLogins_UserId",
                 schema: "identity",
                 table: "UserLogins",
-                column: "UserId");
+                column: "UserId"
+            );
 
             migrationBuilder.CreateIndex(
                 name: "IX_UserRoles_RoleId",
                 schema: "identity",
                 table: "UserRoles",
-                column: "RoleId");
+                column: "RoleId"
+            );
 
             migrationBuilder.CreateIndex(
                 name: "EmailIndex",
                 schema: "identity",
                 table: "Users",
-                column: "NormalizedEmail");
+                column: "NormalizedEmail"
+            );
 
             migrationBuilder.CreateIndex(
                 name: "UserNameIndex",
                 schema: "identity",
                 table: "Users",
                 column: "NormalizedUserName",
-                unique: true);
+                unique: true
+            );
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "RoleClaims",
-                schema: "identity");
+            migrationBuilder.DropTable(name: "RoleClaims", schema: "identity");
 
-            migrationBuilder.DropTable(
-                name: "Scopes",
-                schema: "openid");
+            migrationBuilder.DropTable(name: "Scopes", schema: "openid");
 
-            migrationBuilder.DropTable(
-                name: "Tokens",
-                schema: "openid");
+            migrationBuilder.DropTable(name: "Tokens", schema: "openid");
 
-            migrationBuilder.DropTable(
-                name: "UserClaims",
-                schema: "identity");
+            migrationBuilder.DropTable(name: "UserClaims", schema: "identity");
 
-            migrationBuilder.DropTable(
-                name: "UserLogins",
-                schema: "identity");
+            migrationBuilder.DropTable(name: "UserLogins", schema: "identity");
 
-            migrationBuilder.DropTable(
-                name: "UserRoles",
-                schema: "identity");
+            migrationBuilder.DropTable(name: "UserRoles", schema: "identity");
 
-            migrationBuilder.DropTable(
-                name: "UserTokens",
-                schema: "identity");
+            migrationBuilder.DropTable(name: "UserTokens", schema: "identity");
 
-            migrationBuilder.DropTable(
-                name: "Authorizations",
-                schema: "openid");
+            migrationBuilder.DropTable(name: "Authorizations", schema: "openid");
 
-            migrationBuilder.DropTable(
-                name: "Roles",
-                schema: "identity");
+            migrationBuilder.DropTable(name: "Roles", schema: "identity");
 
-            migrationBuilder.DropTable(
-                name: "Users",
-                schema: "identity");
+            migrationBuilder.DropTable(name: "Users", schema: "identity");
 
-            migrationBuilder.DropTable(
-                name: "Applications",
-                schema: "openid");
+            migrationBuilder.DropTable(name: "Applications", schema: "openid");
         }
     }
 }
