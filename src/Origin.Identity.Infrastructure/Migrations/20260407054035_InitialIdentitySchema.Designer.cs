@@ -12,7 +12,7 @@ using Origin.Identity.Infrastructure.Persistence;
 namespace Origin.Identity.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationIdentityDbContext))]
-    [Migration("20260407051757_InitialIdentitySchema")]
+    [Migration("20260407054035_InitialIdentitySchema")]
     partial class InitialIdentitySchema
     {
         /// <inheritdoc />
@@ -182,7 +182,7 @@ namespace Origin.Identity.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Applications", "identity");
+                    b.ToTable("Applications", "openid");
                 });
 
             modelBuilder.Entity("OpenIddict.EntityFrameworkCore.Models.OpenIddictEntityFrameworkCoreAuthorization<System.Guid>", b =>
@@ -219,7 +219,7 @@ namespace Origin.Identity.Infrastructure.Migrations
 
                     b.HasIndex("ApplicationId");
 
-                    b.ToTable("Authorizations", "identity");
+                    b.ToTable("Authorizations", "openid");
                 });
 
             modelBuilder.Entity("OpenIddict.EntityFrameworkCore.Models.OpenIddictEntityFrameworkCoreScope<System.Guid>", b =>
@@ -254,7 +254,7 @@ namespace Origin.Identity.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Scopes", "identity");
+                    b.ToTable("Scopes", "openid");
                 });
 
             modelBuilder.Entity("OpenIddict.EntityFrameworkCore.Models.OpenIddictEntityFrameworkCoreToken<System.Guid>", b =>
@@ -305,7 +305,7 @@ namespace Origin.Identity.Infrastructure.Migrations
 
                     b.HasIndex("AuthorizationId");
 
-                    b.ToTable("Tokens", "identity");
+                    b.ToTable("Tokens", "openid");
                 });
 
             modelBuilder.Entity("Origin.Identity.Infrastructure.Identity.ApplicationRole", b =>

@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
@@ -12,11 +13,14 @@ namespace Origin.Identity.Infrastructure.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.EnsureSchema(
+                name: "openid");
+
+            migrationBuilder.EnsureSchema(
                 name: "identity");
 
             migrationBuilder.CreateTable(
                 name: "Applications",
-                schema: "identity",
+                schema: "openid",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
@@ -58,7 +62,7 @@ namespace Origin.Identity.Infrastructure.Migrations
 
             migrationBuilder.CreateTable(
                 name: "Scopes",
-                schema: "identity",
+                schema: "openid",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
@@ -109,7 +113,7 @@ namespace Origin.Identity.Infrastructure.Migrations
 
             migrationBuilder.CreateTable(
                 name: "Authorizations",
-                schema: "identity",
+                schema: "openid",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
@@ -128,7 +132,7 @@ namespace Origin.Identity.Infrastructure.Migrations
                     table.ForeignKey(
                         name: "FK_Authorizations_Applications_ApplicationId",
                         column: x => x.ApplicationId,
-                        principalSchema: "identity",
+                        principalSchema: "openid",
                         principalTable: "Applications",
                         principalColumn: "Id");
                 });
@@ -252,7 +256,7 @@ namespace Origin.Identity.Infrastructure.Migrations
 
             migrationBuilder.CreateTable(
                 name: "Tokens",
-                schema: "identity",
+                schema: "openid",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
@@ -275,20 +279,20 @@ namespace Origin.Identity.Infrastructure.Migrations
                     table.ForeignKey(
                         name: "FK_Tokens_Applications_ApplicationId",
                         column: x => x.ApplicationId,
-                        principalSchema: "identity",
+                        principalSchema: "openid",
                         principalTable: "Applications",
                         principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Tokens_Authorizations_AuthorizationId",
                         column: x => x.AuthorizationId,
-                        principalSchema: "identity",
+                        principalSchema: "openid",
                         principalTable: "Authorizations",
                         principalColumn: "Id");
                 });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Authorizations_ApplicationId",
-                schema: "identity",
+                schema: "openid",
                 table: "Authorizations",
                 column: "ApplicationId");
 
@@ -307,13 +311,13 @@ namespace Origin.Identity.Infrastructure.Migrations
 
             migrationBuilder.CreateIndex(
                 name: "IX_Tokens_ApplicationId",
-                schema: "identity",
+                schema: "openid",
                 table: "Tokens",
                 column: "ApplicationId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Tokens_AuthorizationId",
-                schema: "identity",
+                schema: "openid",
                 table: "Tokens",
                 column: "AuthorizationId");
 
@@ -358,11 +362,11 @@ namespace Origin.Identity.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "Scopes",
-                schema: "identity");
+                schema: "openid");
 
             migrationBuilder.DropTable(
                 name: "Tokens",
-                schema: "identity");
+                schema: "openid");
 
             migrationBuilder.DropTable(
                 name: "UserClaims",
@@ -382,7 +386,7 @@ namespace Origin.Identity.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "Authorizations",
-                schema: "identity");
+                schema: "openid");
 
             migrationBuilder.DropTable(
                 name: "Roles",
@@ -394,7 +398,7 @@ namespace Origin.Identity.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "Applications",
-                schema: "identity");
+                schema: "openid");
         }
     }
 }

@@ -54,22 +54,22 @@ namespace Origin.Identity.Infrastructure.Persistence
             #region OpenIddict Tables
             builder.Entity<OpenIddictEntityFrameworkCoreApplication<Guid>>(entity =>
             {
-                entity.ToTable("Applications");
+                entity.ToTable("Applications", "openid");
             });
 
             builder.Entity<OpenIddictEntityFrameworkCoreAuthorization<Guid>>(entity =>
             {
-                entity.ToTable("Authorizations");
+                entity.ToTable("Authorizations", "openid");
             });
 
             builder.Entity<OpenIddictEntityFrameworkCoreScope<Guid>>(entity =>
             {
-                entity.ToTable("Scopes");
+                entity.ToTable("Scopes", "openid");
             });
 
             builder.Entity<OpenIddictEntityFrameworkCoreToken<Guid>>(entity =>
             {
-                entity.ToTable("Tokens");
+                entity.ToTable("Tokens", "openid");
             });
             #endregion
         }
