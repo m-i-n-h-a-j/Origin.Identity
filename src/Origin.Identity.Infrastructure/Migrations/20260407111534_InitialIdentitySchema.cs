@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
@@ -11,22 +12,40 @@ namespace Origin.Identity.Infrastructure.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.EnsureSchema(name: "openid");
-
             migrationBuilder.EnsureSchema(name: "identity");
 
             migrationBuilder.CreateTable(
-                name: "Applications",
-                schema: "openid",
+                name: "OpenIddictApplications",
+                schema: "identity",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    ApplicationType = table.Column<string>(type: "text", nullable: true),
-                    ClientId = table.Column<string>(type: "text", nullable: true),
+                    Id = table.Column<string>(type: "text", nullable: false),
+                    ApplicationType = table.Column<string>(
+                        type: "character varying(50)",
+                        maxLength: 50,
+                        nullable: true
+                    ),
+                    ClientId = table.Column<string>(
+                        type: "character varying(100)",
+                        maxLength: 100,
+                        nullable: true
+                    ),
                     ClientSecret = table.Column<string>(type: "text", nullable: true),
-                    ClientType = table.Column<string>(type: "text", nullable: true),
-                    ConcurrencyToken = table.Column<string>(type: "text", nullable: true),
-                    ConsentType = table.Column<string>(type: "text", nullable: true),
+                    ClientType = table.Column<string>(
+                        type: "character varying(50)",
+                        maxLength: 50,
+                        nullable: true
+                    ),
+                    ConcurrencyToken = table.Column<string>(
+                        type: "character varying(50)",
+                        maxLength: 50,
+                        nullable: true
+                    ),
+                    ConsentType = table.Column<string>(
+                        type: "character varying(50)",
+                        maxLength: 50,
+                        nullable: true
+                    ),
                     DisplayName = table.Column<string>(type: "text", nullable: true),
                     DisplayNames = table.Column<string>(type: "text", nullable: true),
                     JsonWebKeySet = table.Column<string>(type: "text", nullable: true),
@@ -39,7 +58,36 @@ namespace Origin.Identity.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Applications", x => x.Id);
+                    table.PrimaryKey("PK_OpenIddictApplications", x => x.Id);
+                }
+            );
+
+            migrationBuilder.CreateTable(
+                name: "OpenIddictScopes",
+                schema: "identity",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "text", nullable: false),
+                    ConcurrencyToken = table.Column<string>(
+                        type: "character varying(50)",
+                        maxLength: 50,
+                        nullable: true
+                    ),
+                    Description = table.Column<string>(type: "text", nullable: true),
+                    Descriptions = table.Column<string>(type: "text", nullable: true),
+                    DisplayName = table.Column<string>(type: "text", nullable: true),
+                    DisplayNames = table.Column<string>(type: "text", nullable: true),
+                    Name = table.Column<string>(
+                        type: "character varying(200)",
+                        maxLength: 200,
+                        nullable: true
+                    ),
+                    Properties = table.Column<string>(type: "text", nullable: true),
+                    Resources = table.Column<string>(type: "text", nullable: true),
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_OpenIddictScopes", x => x.Id);
                 }
             );
 
@@ -64,27 +112,6 @@ namespace Origin.Identity.Infrastructure.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Roles", x => x.Id);
-                }
-            );
-
-            migrationBuilder.CreateTable(
-                name: "Scopes",
-                schema: "openid",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    ConcurrencyToken = table.Column<string>(type: "text", nullable: true),
-                    Description = table.Column<string>(type: "text", nullable: true),
-                    Descriptions = table.Column<string>(type: "text", nullable: true),
-                    DisplayName = table.Column<string>(type: "text", nullable: true),
-                    DisplayNames = table.Column<string>(type: "text", nullable: true),
-                    Name = table.Column<string>(type: "text", nullable: true),
-                    Properties = table.Column<string>(type: "text", nullable: true),
-                    Resources = table.Column<string>(type: "text", nullable: true),
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Scopes", x => x.Id);
                 }
             );
 
@@ -154,31 +181,47 @@ namespace Origin.Identity.Infrastructure.Migrations
             );
 
             migrationBuilder.CreateTable(
-                name: "Authorizations",
-                schema: "openid",
+                name: "OpenIddictAuthorizations",
+                schema: "identity",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    ApplicationId = table.Column<Guid>(type: "uuid", nullable: true),
-                    ConcurrencyToken = table.Column<string>(type: "text", nullable: true),
+                    Id = table.Column<string>(type: "text", nullable: false),
+                    ApplicationId = table.Column<string>(type: "text", nullable: true),
+                    ConcurrencyToken = table.Column<string>(
+                        type: "character varying(50)",
+                        maxLength: 50,
+                        nullable: true
+                    ),
                     CreationDate = table.Column<DateTime>(
                         type: "timestamp with time zone",
                         nullable: true
                     ),
                     Properties = table.Column<string>(type: "text", nullable: true),
                     Scopes = table.Column<string>(type: "text", nullable: true),
-                    Status = table.Column<string>(type: "text", nullable: true),
-                    Subject = table.Column<string>(type: "text", nullable: true),
-                    Type = table.Column<string>(type: "text", nullable: true),
+                    Status = table.Column<string>(
+                        type: "character varying(50)",
+                        maxLength: 50,
+                        nullable: true
+                    ),
+                    Subject = table.Column<string>(
+                        type: "character varying(400)",
+                        maxLength: 400,
+                        nullable: true
+                    ),
+                    Type = table.Column<string>(
+                        type: "character varying(50)",
+                        maxLength: 50,
+                        nullable: true
+                    ),
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Authorizations", x => x.Id);
+                    table.PrimaryKey("PK_OpenIddictAuthorizations", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Authorizations_Applications_ApplicationId",
+                        name: "FK_OpenIddictAuthorizations_OpenIddictApplications_Application~",
                         column: x => x.ApplicationId,
-                        principalSchema: "openid",
-                        principalTable: "Applications",
+                        principalSchema: "identity",
+                        principalTable: "OpenIddictApplications",
                         principalColumn: "Id"
                     );
                 }
@@ -329,14 +372,18 @@ namespace Origin.Identity.Infrastructure.Migrations
             );
 
             migrationBuilder.CreateTable(
-                name: "Tokens",
-                schema: "openid",
+                name: "OpenIddictTokens",
+                schema: "identity",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    ApplicationId = table.Column<Guid>(type: "uuid", nullable: true),
-                    AuthorizationId = table.Column<Guid>(type: "uuid", nullable: true),
-                    ConcurrencyToken = table.Column<string>(type: "text", nullable: true),
+                    Id = table.Column<string>(type: "text", nullable: false),
+                    ApplicationId = table.Column<string>(type: "text", nullable: true),
+                    AuthorizationId = table.Column<string>(type: "text", nullable: true),
+                    ConcurrencyToken = table.Column<string>(
+                        type: "character varying(50)",
+                        maxLength: 50,
+                        nullable: true
+                    ),
                     CreationDate = table.Column<DateTime>(
                         type: "timestamp with time zone",
                         nullable: true
@@ -351,36 +398,90 @@ namespace Origin.Identity.Infrastructure.Migrations
                         type: "timestamp with time zone",
                         nullable: true
                     ),
-                    ReferenceId = table.Column<string>(type: "text", nullable: true),
-                    Status = table.Column<string>(type: "text", nullable: true),
-                    Subject = table.Column<string>(type: "text", nullable: true),
-                    Type = table.Column<string>(type: "text", nullable: true),
+                    ReferenceId = table.Column<string>(
+                        type: "character varying(100)",
+                        maxLength: 100,
+                        nullable: true
+                    ),
+                    Status = table.Column<string>(
+                        type: "character varying(50)",
+                        maxLength: 50,
+                        nullable: true
+                    ),
+                    Subject = table.Column<string>(
+                        type: "character varying(400)",
+                        maxLength: 400,
+                        nullable: true
+                    ),
+                    Type = table.Column<string>(
+                        type: "character varying(150)",
+                        maxLength: 150,
+                        nullable: true
+                    ),
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Tokens", x => x.Id);
+                    table.PrimaryKey("PK_OpenIddictTokens", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Tokens_Applications_ApplicationId",
+                        name: "FK_OpenIddictTokens_OpenIddictApplications_ApplicationId",
                         column: x => x.ApplicationId,
-                        principalSchema: "openid",
-                        principalTable: "Applications",
+                        principalSchema: "identity",
+                        principalTable: "OpenIddictApplications",
                         principalColumn: "Id"
                     );
                     table.ForeignKey(
-                        name: "FK_Tokens_Authorizations_AuthorizationId",
+                        name: "FK_OpenIddictTokens_OpenIddictAuthorizations_AuthorizationId",
                         column: x => x.AuthorizationId,
-                        principalSchema: "openid",
-                        principalTable: "Authorizations",
+                        principalSchema: "identity",
+                        principalTable: "OpenIddictAuthorizations",
                         principalColumn: "Id"
                     );
                 }
             );
 
             migrationBuilder.CreateIndex(
-                name: "IX_Authorizations_ApplicationId",
-                schema: "openid",
-                table: "Authorizations",
-                column: "ApplicationId"
+                name: "IX_OpenIddictApplications_ClientId",
+                schema: "identity",
+                table: "OpenIddictApplications",
+                column: "ClientId",
+                unique: true
+            );
+
+            migrationBuilder.CreateIndex(
+                name: "IX_OpenIddictAuthorizations_ApplicationId_Status_Subject_Type",
+                schema: "identity",
+                table: "OpenIddictAuthorizations",
+                columns: new[] { "ApplicationId", "Status", "Subject", "Type" }
+            );
+
+            migrationBuilder.CreateIndex(
+                name: "IX_OpenIddictScopes_Name",
+                schema: "identity",
+                table: "OpenIddictScopes",
+                column: "Name",
+                unique: true
+            );
+
+            migrationBuilder.CreateIndex(
+                name: "IX_OpenIddictTokens_ApplicationId_Status_Subject_Type",
+                schema: "identity",
+                table: "OpenIddictTokens",
+                columns: new[] { "ApplicationId", "Status", "Subject", "Type" }
+            );
+
+            migrationBuilder.CreateIndex(
+                name: "IX_OpenIddictTokens_AuthorizationId",
+                schema: "identity",
+                table: "OpenIddictTokens",
+                column: "AuthorizationId"
+            );
+
+            migrationBuilder.CreateIndex(
+                name: "IX_OpenIddictTokens_ReferenceId",
+                schema: "identity",
+                table: "OpenIddictTokens",
+                column: "ReferenceId",
+                unique: true
             );
 
             migrationBuilder.CreateIndex(
@@ -396,20 +497,6 @@ namespace Origin.Identity.Infrastructure.Migrations
                 table: "Roles",
                 column: "NormalizedName",
                 unique: true
-            );
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Tokens_ApplicationId",
-                schema: "openid",
-                table: "Tokens",
-                column: "ApplicationId"
-            );
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Tokens_AuthorizationId",
-                schema: "openid",
-                table: "Tokens",
-                column: "AuthorizationId"
             );
 
             migrationBuilder.CreateIndex(
@@ -452,11 +539,11 @@ namespace Origin.Identity.Infrastructure.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(name: "OpenIddictScopes", schema: "identity");
+
+            migrationBuilder.DropTable(name: "OpenIddictTokens", schema: "identity");
+
             migrationBuilder.DropTable(name: "RoleClaims", schema: "identity");
-
-            migrationBuilder.DropTable(name: "Scopes", schema: "openid");
-
-            migrationBuilder.DropTable(name: "Tokens", schema: "openid");
 
             migrationBuilder.DropTable(name: "UserClaims", schema: "identity");
 
@@ -466,13 +553,13 @@ namespace Origin.Identity.Infrastructure.Migrations
 
             migrationBuilder.DropTable(name: "UserTokens", schema: "identity");
 
-            migrationBuilder.DropTable(name: "Authorizations", schema: "openid");
+            migrationBuilder.DropTable(name: "OpenIddictAuthorizations", schema: "identity");
 
             migrationBuilder.DropTable(name: "Roles", schema: "identity");
 
             migrationBuilder.DropTable(name: "Users", schema: "identity");
 
-            migrationBuilder.DropTable(name: "Applications", schema: "openid");
+            migrationBuilder.DropTable(name: "OpenIddictApplications", schema: "identity");
         }
     }
 }

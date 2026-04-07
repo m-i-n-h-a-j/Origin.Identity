@@ -16,6 +16,8 @@ namespace Origin.Identity.Infrastructure.Persistence
 
             builder.HasDefaultSchema("identity");
 
+            builder.UseOpenIddict();
+
             #region Identity Tables
             builder.Entity<ApplicationUser>(entity =>
             {
@@ -48,28 +50,6 @@ namespace Origin.Identity.Infrastructure.Persistence
             builder.Entity<IdentityRoleClaim<Guid>>(entity =>
             {
                 entity.ToTable("RoleClaims");
-            });
-            #endregion
-
-            #region OpenIddict Tables
-            builder.Entity<OpenIddictEntityFrameworkCoreApplication<Guid>>(entity =>
-            {
-                entity.ToTable("Applications", "openid");
-            });
-
-            builder.Entity<OpenIddictEntityFrameworkCoreAuthorization<Guid>>(entity =>
-            {
-                entity.ToTable("Authorizations", "openid");
-            });
-
-            builder.Entity<OpenIddictEntityFrameworkCoreScope<Guid>>(entity =>
-            {
-                entity.ToTable("Scopes", "openid");
-            });
-
-            builder.Entity<OpenIddictEntityFrameworkCoreToken<Guid>>(entity =>
-            {
-                entity.ToTable("Tokens", "openid");
             });
             #endregion
         }

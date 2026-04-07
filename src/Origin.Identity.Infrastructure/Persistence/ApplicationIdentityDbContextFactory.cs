@@ -14,6 +14,8 @@ namespace Origin.Identity.Infrastructure.Persistence
                 "Host=10.1.248.10;Port=5432;Database=origin_identity;Username=postgres;Password=pgsu123#"
             );
 
+            optionsBuilder.UseOpenIddict();
+
             return new ApplicationIdentityDbContext(optionsBuilder.Options);
         }
     }

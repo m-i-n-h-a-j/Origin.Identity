@@ -40,14 +40,14 @@ namespace Origin.Identity.Infrastructure.DependencyInjection
                     options.Password.RequireLowercase = true;
                     options.Password.RequireNonAlphanumeric = false;
 
-                    options.SignIn.RequireConfirmedEmail = false;
-
                     options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(15);
                     options.Lockout.MaxFailedAccessAttempts = 5;
                     options.Lockout.AllowedForNewUsers = true;
                 })
                 .AddEntityFrameworkStores<ApplicationIdentityDbContext>()
                 .AddDefaultTokenProviders();
+
+            services.AddAuthentication(OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme);
 
             services
                 .AddOpenIddict()
@@ -110,9 +110,6 @@ namespace Origin.Identity.Infrastructure.DependencyInjection
                 })
                 .AddValidation(options =>
                 {
-                    services.AddAuthentication(
-                        OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme
-                    );
                     options.UseLocalServer();
                     options.UseAspNetCore();
                 });
