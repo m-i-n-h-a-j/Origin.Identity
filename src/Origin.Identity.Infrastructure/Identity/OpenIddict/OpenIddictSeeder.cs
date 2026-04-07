@@ -6,7 +6,7 @@ namespace Origin.Identity.Infrastructure.Identity.OpenIddict
 {
     public static class OpenIddictSeeder
     {
-        public static async Task SeedAsync(IServiceProvider services)
+        public static async Task SeedScopeAsync(IServiceProvider services)
         {
             using var scope = services.CreateScope();
 
@@ -33,6 +33,14 @@ namespace Origin.Identity.Infrastructure.Identity.OpenIddict
             {
                 await scopeManager.UpdateAsync(apiScope, apiScopeDescriptor);
             }
+        }
+
+        public static async Task SeedApplicationAsync(IServiceProvider services)
+        {
+            using var scope = services.CreateScope();
+
+            var applicationManager =
+                scope.ServiceProvider.GetRequiredService<IOpenIddictApplicationManager>();
 
             var postmanApplication = await applicationManager.FindByClientIdAsync("postman");
 
