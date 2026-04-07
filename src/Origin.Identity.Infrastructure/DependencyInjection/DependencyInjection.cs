@@ -14,7 +14,8 @@ namespace Origin.Identity.Infrastructure.DependencyInjection
     {
         public static IServiceCollection AddInfrastructure(
             this IServiceCollection services,
-            IConfiguration configuration
+            IConfiguration configuration,
+            bool isDevelopment
         )
         {
             var connectionString = configuration.GetConnectionString("DefaultConnection");
@@ -36,6 +37,12 @@ namespace Origin.Identity.Infrastructure.DependencyInjection
                     options.Password.RequireUppercase = true;
                     options.Password.RequireLowercase = true;
                     options.Password.RequireNonAlphanumeric = false;
+
+                    options.SignIn.RequireConfirmedEmail = false;
+
+                    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(15);
+                    options.Lockout.MaxFailedAccessAttempts = 5;
+                    options.Lockout.AllowedForNewUsers = true;
                 })
                 .AddEntityFrameworkStores<ApplicationIdentityDbContext>()
                 .AddDefaultTokenProviders();
@@ -54,7 +61,6 @@ namespace Origin.Identity.Infrastructure.DependencyInjection
                     options.SetEndSessionEndpointUris("/connect/logout");
 
                     options.AllowAuthorizationCodeFlow().RequireProofKeyForCodeExchange();
-
                     options.AllowRefreshTokenFlow();
 
                     options.RegisterScopes(
