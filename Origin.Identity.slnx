@@ -20,5 +20,8 @@
       Path="src/Origin.Identity.Infrastructure/Origin.Identity.Infrastructure.csproj"
       Id="98a71f31-6a5f-48be-8297-70e69c23d48f"
     />
+    <Project Path="src/Origin.Identity.UI/Origin.Identity.UI.esproj">
+      <Build />
+    </Project>
   </Folder>
 </Solution>

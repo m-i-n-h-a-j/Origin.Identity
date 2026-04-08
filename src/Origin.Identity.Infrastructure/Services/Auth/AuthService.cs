@@ -6,7 +6,10 @@ using Origin.Identity.Infrastructure.Identity;
 
 namespace Origin.Identity.Infrastructure.Services.Auth
 {
-    public sealed class AuthService(UserManager<ApplicationUser> userManager) : IAuthService
+    public sealed class AuthService(
+        UserManager<ApplicationUser> userManager,
+        SignInManager<ApplicationUser> signInManager
+    ) : IAuthService
     {
         public async Task<Result<Guid>> RegisterAsync(RegisterRequestDto request)
         {
@@ -40,9 +43,21 @@ namespace Origin.Identity.Infrastructure.Services.Auth
             return Result<Guid>.Success(user.Id);
         }
 
-        public Task<Result<AuthResponseDto>> LoginAsync(LoginRequestDto request)
+        public async Task<Result<AuthResponseDto>> LoginAsync(LoginRequestDto request)
         {
-            throw new NotImplementedException();
+            var result = await signInManager.PasswordSignInAsync(
+                request.Email,
+                request.Password,
+                isPersistent: true,
+                lockoutOnFailure: true
+            );
+
+            if (!result.Succeeded)
+            {
+                return Result<AuthResponseDto>.Failure("Invalid email or password.");
+            }
+
+            return Result<AuthResponseDto>.Success(new AuthResponseDto());
         }
     }
 }

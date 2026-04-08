@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using OpenIddict.EntityFrameworkCore.Models;
 using Origin.Identity.Infrastructure.Identity;
 
 namespace Origin.Identity.Infrastructure.Persistence

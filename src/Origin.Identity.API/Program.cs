@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 using Origin.Identity.Infrastructure.DependencyInjection;
 using Origin.Identity.Infrastructure.Identity.OpenIddict;
 using Origin.Identity.Infrastructure.Persistence;
@@ -6,12 +7,28 @@ using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+#region CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(
+        "AllowClients",
+        policy =>
+        {
+            policy
+                .WithOrigins("http://localhost:4200")
+                .AllowAnyHeader()
+                .AllowAnyMethod()
+                .AllowCredentials();
+        }
+    );
+});
+#endregion
+
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 
 builder.Services.AddInfrastructure(builder.Configuration, builder.Environment.IsDevelopment());
 
-builder.Services.AddAuthentication();
 builder.Services.AddAuthorization();
 
 var app = builder.Build();
@@ -31,10 +48,39 @@ if (app.Environment.IsDevelopment())
     app.MapScalarApiReference();
 }
 
+var authSpaPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "auth");
+
 app.UseHttpsRedirection();
+
+app.UseCors("AllowClients");
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.UseStaticFiles();
+
+app.UseStaticFiles(
+    new StaticFileOptions
+    {
+        FileProvider = new PhysicalFileProvider(authSpaPath),
+        RequestPath = "/auth",
+    }
+);
+
+app.MapWhen(
+    context =>
+        context.Request.Path.StartsWithSegments("/auth")
+        && !Path.HasExtension(context.Request.Path.Value),
+    branch =>
+    {
+        branch.Run(async context =>
+        {
+            context.Response.ContentType = "text/html";
+
+            await context.Response.SendFileAsync(Path.Combine(authSpaPath, "index.html"));
+        });
+    }
+);
 
 app.MapControllers();
 

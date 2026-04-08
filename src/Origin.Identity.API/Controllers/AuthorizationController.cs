@@ -26,13 +26,9 @@ namespace Origin.Identity.API.Controllers
 
             if (User.Identity is not { IsAuthenticated: true })
             {
-                return Challenge(
-                    new AuthenticationProperties
-                    {
-                        RedirectUri = Request.Path + Request.QueryString,
-                    },
-                    IdentityConstants.ApplicationScheme
-                );
+                var returnUrl = Uri.EscapeDataString($"{Request.Path}{Request.QueryString}");
+
+                return Redirect($"/auth/login?returnUrl={returnUrl}");
             }
 
             var user = await userManager.GetUserAsync(User);
@@ -49,6 +45,37 @@ namespace Origin.Identity.API.Controllers
             principal.SetScopes(request.GetScopes());
 
             return SignIn(principal, OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
+        }
+
+        [HttpGet("~/connect/logout")]
+        [HttpPost("~/connect/logout")]
+        public async Task<IActionResult> Logout()
+        {
+            await HttpContext.SignOutAsync(IdentityConstants.ApplicationScheme);
+
+            return SignOut(
+                authenticationSchemes: OpenIddictServerAspNetCoreDefaults.AuthenticationScheme,
+                properties: new AuthenticationProperties { RedirectUri = "/auth/login" }
+            );
+        }
+
+        [HttpGet("~/connect/userinfo")]
+        public async Task<IActionResult> UserInfo()
+        {
+            var user = await userManager.GetUserAsync(User);
+
+            if (user is null)
+            {
+                return Challenge(
+                    OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
+            }
+
+            return Ok(new
+            {
+                sub = user.Id,
+                email = user.Email,
+                name = user.UserName
+            });
         }
     }
 }

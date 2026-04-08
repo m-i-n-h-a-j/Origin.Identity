@@ -6,20 +6,30 @@ namespace Origin.Identity.Infrastructure.Identity.OpenIddict
 {
     public static class OpenIddictSeeder
     {
-        public static async Task SeedScopeAsync(IServiceProvider services)
+        public static async Task SeedAsync(IServiceProvider services)
         {
             using var scope = services.CreateScope();
 
             var applicationManager =
                 scope.ServiceProvider.GetRequiredService<IOpenIddictApplicationManager>();
 
-            var scopeManager = scope.ServiceProvider.GetRequiredService<IOpenIddictScopeManager>();
+            await SeedApiScopeAsync(scope);
+            await SeedAngularSpaApplicationAsync(applicationManager);
+        }
 
-            var apiScope = await scopeManager.FindByNameAsync("api");
+        public static async Task SeedApiScopeAsync(IServiceScope serviceScope)
+        {
+            var applicationManager =
+                serviceScope.ServiceProvider.GetRequiredService<IOpenIddictApplicationManager>();
+
+            var scopeManager =
+                serviceScope.ServiceProvider.GetRequiredService<IOpenIddictScopeManager>();
+
+            var apiScope = await scopeManager.FindByNameAsync("origin_api");
 
             var apiScopeDescriptor = new OpenIddictScopeDescriptor
             {
-                Name = "api",
+                Name = "origin_api",
                 DisplayName = "Main API Access",
             };
 
@@ -27,56 +37,62 @@ namespace Origin.Identity.Infrastructure.Identity.OpenIddict
 
             if (apiScope is null)
             {
-                // await scopeManager.CreateAsync(apiScopeDescriptor);
+                await scopeManager.CreateAsync(apiScopeDescriptor);
+
             }
             else
             {
                 await scopeManager.UpdateAsync(apiScope, apiScopeDescriptor);
+
+
             }
         }
 
-        public static async Task SeedApplicationAsync(IServiceProvider services)
+        public static async Task SeedAngularSpaApplicationAsync(
+            IOpenIddictApplicationManager applicationManager
+        )
         {
-            using var scope = services.CreateScope();
+            const string clientId = "angular-spa";
 
-            var applicationManager =
-                scope.ServiceProvider.GetRequiredService<IOpenIddictApplicationManager>();
+            var existingApplication = await applicationManager.FindByClientIdAsync(clientId);
 
-            var postmanApplication = await applicationManager.FindByClientIdAsync("postman");
-
-            var postmanDescriptor = new OpenIddictApplicationDescriptor
+            var descriptor = new OpenIddictApplicationDescriptor
             {
-                ClientId = "postman",
-                DisplayName = "Postman",
+                ClientId = clientId,
+                DisplayName = "Angular SPA",
 
                 ClientType = ClientTypes.Public,
-                ConsentType = ConsentTypes.Explicit,
+
+                ConsentType = ConsentTypes.Implicit,
             };
 
-            postmanDescriptor.RedirectUris.Add(new Uri("https://oauth.pstmn.io/v1/callback"));
+            descriptor.RedirectUris.Add(new Uri("http://localhost:4200/auth/callback"));
 
-            postmanDescriptor.Permissions.UnionWith([
+            descriptor.PostLogoutRedirectUris.Add(new Uri("http://localhost:4200"));
+
+            descriptor.Permissions.UnionWith([
                 Permissions.Endpoints.Authorization,
                 Permissions.Endpoints.Token,
+                Permissions.Endpoints.EndSession,
                 Permissions.GrantTypes.AuthorizationCode,
                 Permissions.GrantTypes.RefreshToken,
                 Permissions.ResponseTypes.Code,
                 Permissions.Prefixes.Scope + Scopes.OpenId,
-                Permissions.Scopes.Profile,
-                Permissions.Scopes.Email,
+                Permissions.Prefixes.Scope + Scopes.Profile,
+                Permissions.Prefixes.Scope + Scopes.Email,
                 Permissions.Prefixes.Scope + Scopes.OfflineAccess,
-                Permissions.Prefixes.Scope + "api",
+                Permissions.Prefixes.Scope + "origin_api",
             ]);
 
-            postmanDescriptor.Requirements.Add(Requirements.Features.ProofKeyForCodeExchange);
+            descriptor.Requirements.Add(Requirements.Features.ProofKeyForCodeExchange);
 
-            if (postmanApplication is null)
+            if (existingApplication is null)
             {
-                // await applicationManager.CreateAsync(postmanDescriptor);
+                await applicationManager.CreateAsync(descriptor);
             }
             else
             {
-                await applicationManager.UpdateAsync(postmanApplication, postmanDescriptor);
+                await applicationManager.UpdateAsync(existingApplication, descriptor);
             }
         }
     }

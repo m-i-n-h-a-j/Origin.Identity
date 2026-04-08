@@ -20,5 +20,18 @@ namespace Origin.Identity.API.Controllers
 
             return Ok(new { userId = result.Value });
         }
+
+        [HttpPost("login")]
+        public async Task<IResult> Login(LoginRequestDto request)
+        {
+            var result = await authService.LoginAsync(request);
+
+            if (!result.IsSuccess)
+            {
+                return Results.Unauthorized();
+            }
+
+            return Results.Ok(result.Value);
+        }
     }
 }

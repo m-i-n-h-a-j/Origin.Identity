@@ -4,8 +4,8 @@
     {
         public static async Task SeedOpenIddictAsync(this IServiceProvider services)
         {
-            await OpenIddictSeeder.SeedScopeAsync(services);
-            await OpenIddictSeeder.SeedApplicationAsync(services);
+            await OpenIddictSeeder.SeedAsync(services);
+
         }
     }
 }
