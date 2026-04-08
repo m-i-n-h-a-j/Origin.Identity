@@ -1,11 +1,11 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-login-page',
-  imports: [FormsModule],
+  imports: [FormsModule, RouterLink],
   templateUrl: './login-page.html',
   styleUrl: './login-page.css',
 })
@@ -17,13 +17,13 @@ export class LoginPage {
   email = '';
   password = '';
 
-  isLoading = false;
+  isLoading = signal(false);
   errorMessage = '';
 
   login(): void {
-    if (this.isLoading) return;
+    if (this.isLoading()) return;
 
-    this.isLoading = true;
+    this.isLoading.set(true);
     this.errorMessage = '';
 
     this.http
@@ -39,7 +39,7 @@ export class LoginPage {
           window.location.href = returnUrl;
         },
         error: (error) => {
-          this.isLoading = false;
+          this.isLoading.set(false);
 
           if (error.status === 401) {
             this.errorMessage = 'Invalid email or password.';

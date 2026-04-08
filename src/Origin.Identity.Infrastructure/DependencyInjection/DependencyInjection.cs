@@ -105,8 +105,7 @@ namespace Origin.Identity.Infrastructure.DependencyInjection
                         .UseAspNetCore()
                         .EnableAuthorizationEndpointPassthrough()
                         .EnableEndSessionEndpointPassthrough()
-                        .EnableUserInfoEndpointPassthrough()
-                    ;
+                        .EnableUserInfoEndpointPassthrough();
                 })
                 .AddValidation(options =>
                 {
