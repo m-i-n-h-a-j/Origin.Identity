@@ -66,16 +66,17 @@ namespace Origin.Identity.API.Controllers
 
             if (user is null)
             {
-                return Challenge(
-                    OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
+                return Challenge(OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
             }
 
-            return Ok(new
-            {
-                sub = user.Id,
-                email = user.Email,
-                name = user.UserName
-            });
+            return Ok(
+                new
+                {
+                    sub = user.Id,
+                    email = user.Email,
+                    name = user.UserName,
+                }
+            );
         }
     }
 }

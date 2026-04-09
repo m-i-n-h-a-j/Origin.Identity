@@ -1,4 +1,9 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using System.Net;
+using System.Net.Mail;
+using System.Text.Json;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
 using Origin.Identity.Application.Common;
 using Origin.Identity.Application.Services.Auth;
 using Origin.Identity.Contracts.Auth;
@@ -8,7 +13,9 @@ namespace Origin.Identity.Infrastructure.Services.Auth
 {
     public sealed class AuthService(
         UserManager<ApplicationUser> userManager,
-        SignInManager<ApplicationUser> signInManager
+        SignInManager<ApplicationUser> signInManager,
+        IWebHostEnvironment webHostEnvironment,
+        IConfiguration config
     ) : IAuthService
     {
         public async Task<Result<Guid>> RegisterAsync(RegisterRequestDto request)
@@ -77,6 +84,130 @@ namespace Origin.Identity.Infrastructure.Services.Auth
             }
 
             return Result<string>.Success("Deletion success");
+        }
+
+        public async Task<Result<string>> ForgotPasswordAsync(ForgotPasswordRequestDto request)
+        {
+            var user = await userManager.FindByEmailAsync(request.Email);
+
+            if (user is null)
+            {
+                return Result<string>.Failure("Invalid request.");
+            }
+
+            var token = await userManager.GeneratePasswordResetTokenAsync(user);
+
+            var payload = new
+            {
+                FirstName = user.UserName,
+                Email = user.Email!,
+                ResetPasswordUrl = $"https://localhost:4200/reset-password?userId={Uri.EscapeDataString(user.Id.ToString())}&token={Uri.EscapeDataString(token)}",
+            };
+
+            string jsonPayload = JsonSerializer.Serialize(payload);
+
+            var mode = 1;
+
+            switch (mode)
+            {
+                case 1:
+                {
+                    using var client = new SmtpClient(
+                        config["Email:PSmtp:Host"],
+                        int.Parse(config["Email:PSmtp:Port"]!)
+                    )
+                    {
+                        EnableSsl = false,
+                    };
+
+                    var mail = new MailMessage(
+                        config["Email:From"]!,
+                        user.Email!,
+                        "Password Reset",
+                        Render("password-reset", jsonPayload)
+                    )
+                    {
+                        IsBodyHtml = true,
+                    };
+                    await client.SendMailAsync(mail);
+                    break;
+                }
+
+                case 2:
+                {
+                    using var client = new SmtpClient(
+                        config["Email:GSmtp:Host"],
+                        int.Parse(config["Email:GSmtp:Port"]!)
+                    )
+                    {
+                        EnableSsl = bool.Parse(config["Email:GSmtp:EnableSsl"]!),
+                        Credentials = new NetworkCredential(
+                            config["Email:GSmtp:Username"],
+                            config["Email:GSmtp:Password"]
+                        ),
+                    };
+
+                    var mail = new MailMessage(
+                        config["Email:From"]!,
+                        user.Email!,
+                        "Password Reset",
+                        Render("password-reset", jsonPayload)
+                    )
+                    {
+                        IsBodyHtml = true,
+                    };
+                    await client.SendMailAsync(mail);
+
+                    break;
+                }
+            }
+
+            return Result<string>.Success(token);
+        }
+
+        public async Task<Result<string>> ResetPasswordAsync(ResetPasswordRequestDto request)
+        {
+            var user = await userManager.FindByEmailAsync(request.Email);
+
+            if (user is null)
+            {
+                return Result<string>.Failure("Invalid request.");
+            }
+
+            var resetResult = await userManager.ResetPasswordAsync(
+                user,
+                request.Token,
+                request.NewPassword
+            );
+
+            if (!resetResult.Succeeded)
+            {
+                return Result<string>.Failure(
+                    string.Join(", ", resetResult.Errors.Select(e => e.Description))
+                );
+            }
+
+            return Result<string>.Success("Success");
+        }
+
+        public string Render(string templateName, string jsonPayload)
+        {
+            var path = Path.Combine(
+                webHostEnvironment.ContentRootPath,
+                "HTML",
+                $"{templateName}.html"
+            );
+
+            var template = File.ReadAllText(path);
+
+            var data = JsonSerializer.Deserialize<Dictionary<string, string>>(jsonPayload)!;
+
+            foreach (var kv in data)
+            {
+                template = template.Replace($"{{{{{kv.Key}}}}}", kv.Value);
+            }
+
+            return template;
         }
     }
 }

@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Origin.Identity.Application.Services.Auth;
 using Origin.Identity.Contracts.Auth;
 
@@ -46,6 +45,27 @@ namespace Origin.Identity.API.Controllers
             }
 
             return Results.NoContent();
+        }
+
+        [HttpPost("forgot")]
+        public async Task<IActionResult> ForgotPassword(ForgotPasswordRequestDto request)
+        {
+            var result = await authService.ForgotPasswordAsync(request);
+
+            return Ok(new { message = "Password reset link has been sent to email." });
+        }
+
+        [HttpPost("reset")]
+        public async Task<IActionResult> ResetPassword(ResetPasswordRequestDto request)
+        {
+            var result = await authService.ResetPasswordAsync(request);
+
+            if (!result.IsSuccess)
+            {
+                return BadRequest(new { error = result.Error });
+            }
+
+            return Ok(new { message = "Password has been reset successfully." });
         }
     }
 }

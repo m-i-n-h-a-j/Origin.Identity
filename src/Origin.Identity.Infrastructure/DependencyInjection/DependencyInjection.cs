@@ -1,5 +1,4 @@
-﻿using System.Security.Cryptography.X509Certificates;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -9,6 +8,7 @@ using Origin.Identity.Application.Services.Auth;
 using Origin.Identity.Infrastructure.Identity;
 using Origin.Identity.Infrastructure.Persistence;
 using Origin.Identity.Infrastructure.Services.Auth;
+using System.Security.Cryptography.X509Certificates;
 
 namespace Origin.Identity.Infrastructure.DependencyInjection
 {

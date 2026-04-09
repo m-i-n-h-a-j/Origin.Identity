@@ -10,5 +10,9 @@ namespace Origin.Identity.Application.Services.Auth
         Task<Result<AuthResponseDto>> LoginAsync(LoginRequestDto request);
 
         Task<Result<string>> DeleteUserAsync(string id);
+
+        Task<Result<string>> ForgotPasswordAsync(ForgotPasswordRequestDto request);
+
+        Task<Result<string>> ResetPasswordAsync(ResetPasswordRequestDto request);
     }
 }
