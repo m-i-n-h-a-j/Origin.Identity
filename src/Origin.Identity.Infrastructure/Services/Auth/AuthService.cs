@@ -99,9 +99,9 @@ namespace Origin.Identity.Infrastructure.Services.Auth
 
             var payload = new
             {
-                FirstName = user.UserName,
+                FirstName = user.FirstName ?? user.UserName,
                 Email = user.Email!,
-                ResetPasswordUrl = $"https://localhost:4200/reset-password?userId={Uri.EscapeDataString(user.Id.ToString())}&token={Uri.EscapeDataString(token)}",
+                ResetPasswordUrl = $"https://localhost:7181/auth/reset-password?userId={Uri.EscapeDataString(user.Id.ToString())}&token={Uri.EscapeDataString(token)}",
             };
 
             string jsonPayload = JsonSerializer.Serialize(payload);
@@ -123,7 +123,7 @@ namespace Origin.Identity.Infrastructure.Services.Auth
                     var mail = new MailMessage(
                         config["Email:From"]!,
                         user.Email!,
-                        "Password Reset",
+                        "Reset Password",
                         Render("password-reset", jsonPayload)
                     )
                     {
@@ -150,7 +150,7 @@ namespace Origin.Identity.Infrastructure.Services.Auth
                     var mail = new MailMessage(
                         config["Email:From"]!,
                         user.Email!,
-                        "Password Reset",
+                        "Reset Password",
                         Render("password-reset", jsonPayload)
                     )
                     {
@@ -167,16 +167,22 @@ namespace Origin.Identity.Infrastructure.Services.Auth
 
         public async Task<Result<string>> ResetPasswordAsync(ResetPasswordRequestDto request)
         {
-            var user = await userManager.FindByEmailAsync(request.Email);
 
+            var userId = Uri.UnescapeDataString(request.UserId);
+
+
+            var user = await userManager.FindByIdAsync(userId);
             if (user is null)
             {
                 return Result<string>.Failure("Invalid request.");
             }
 
+
+            var decodedToken = Uri.UnescapeDataString(request.Token);
+
             var resetResult = await userManager.ResetPasswordAsync(
                 user,
-                request.Token,
+               decodedToken,
                 request.NewPassword
             );
 

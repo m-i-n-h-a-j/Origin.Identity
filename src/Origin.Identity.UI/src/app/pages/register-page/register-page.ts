@@ -33,7 +33,7 @@ export class RegisterPage {
     });
   }
 
-  login(): void {
+  register(): void {
     if (this.isLoading()) return;
 
     this.isLoading.set(true);
@@ -62,12 +62,12 @@ export class RegisterPage {
         error: (error) => {
           this.isLoading.set(false);
 
-          if (error.status === 400) {
-            this.errorMessage = error.error;
+          if (error.error?.error) {
+            this.errorMessage = error.error?.error;
             return;
           }
 
-          this.errorMessage = 'Something went wrong while signing in. Please try again.';
+          this.errorMessage = 'Something went wrong while signing up. Please try again.';
         },
       });
   }

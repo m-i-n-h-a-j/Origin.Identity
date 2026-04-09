@@ -27,7 +27,7 @@ namespace Origin.Identity.Infrastructure.DependencyInjection
             services.AddDbContext<ApplicationIdentityDbContext>(options =>
             {
                 options.UseNpgsql(
-                    neonDbPooledConnection,
+                    defaultConnection,
                     npgsql =>
                     {
                         npgsql.CommandTimeout(30);

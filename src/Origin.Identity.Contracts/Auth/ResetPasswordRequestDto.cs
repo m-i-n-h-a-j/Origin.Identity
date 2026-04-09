@@ -2,7 +2,7 @@
 {
     public sealed class ResetPasswordRequestDto
     {
-        public required string Email { get; set; }
+        public required string UserId { get; set; }
 
         public required string Token { get; set; }
 
