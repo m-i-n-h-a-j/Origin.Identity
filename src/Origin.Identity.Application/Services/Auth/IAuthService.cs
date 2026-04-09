@@ -8,5 +8,7 @@ namespace Origin.Identity.Application.Services.Auth
         Task<Result<Guid>> RegisterAsync(RegisterRequestDto request);
 
         Task<Result<AuthResponseDto>> LoginAsync(LoginRequestDto request);
+
+        Task<Result<string>> DeleteUserAsync(string id);
     }
 }

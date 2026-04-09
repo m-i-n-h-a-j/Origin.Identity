@@ -1,1 +1,113 @@
-<p>register-page works!</p>
+<div class="min-h-screen bg-slate-950 text-white flex items-center justify-center px-4">
+  <div class="w-full max-w-md rounded-2xl border border-slate-800 bg-slate-900/80 p-8 shadow-2xl">
+    <div class="mb-8 text-center">
+      <h1 class="text-3xl font-bold tracking-tight">Create Account</h1>
+      <p class="mt-2 text-sm text-slate-400">Sign up to continue</p>
+    </div>
+
+    <form class="space-y-5" (ngSubmit)="login()" #registerForm="ngForm">
+      <div>
+        <label for="userName" class="mb-2 block text-sm font-medium text-slate-300">
+          User Name
+        </label>
+
+        <input
+          id="userName"
+          name="userName"
+          type="text"
+          required
+          [(ngModel)]="userName"
+          class="w-full rounded-xl border border-slate-700 bg-slate-950 px-4 py-3 text-sm text-white outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
+          placeholder="Enter your user name"
+        />
+      </div>
+      <div>
+        <label for="firstName" class="mb-2 block text-sm font-medium text-slate-300">
+          First Name
+        </label>
+
+        <input
+          id="firstName"
+          name="firstName"
+          type="text"
+          required
+          [(ngModel)]="firstName"
+          class="w-full rounded-xl border border-slate-700 bg-slate-950 px-4 py-3 text-sm text-white outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
+          placeholder="Enter your first name"
+        />
+      </div>
+      <div>
+        <label for="lastName" class="mb-2 block text-sm font-medium text-slate-300">
+          Last Name
+        </label>
+
+        <input
+          id="lastName"
+          name="lastName"
+          type="text"
+          required
+          [(ngModel)]="lastName"
+          class="w-full rounded-xl border border-slate-700 bg-slate-950 px-4 py-3 text-sm text-white outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
+          placeholder="Enter your last name"
+        />
+      </div>
+
+      <div>
+        <label for="email" class="mb-2 block text-sm font-medium text-slate-300"> Email </label>
+
+        <input
+          id="email"
+          name="email"
+          type="email"
+          required
+          [(ngModel)]="email"
+          class="w-full rounded-xl border border-slate-700 bg-slate-950 px-4 py-3 text-sm text-white outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
+          placeholder="Enter your email"
+        />
+      </div>
+
+      <div>
+        <div class="mb-2 flex items-center justify-start">
+          <label for="password" class="block text-sm font-medium text-slate-300"> Password </label>
+        </div>
+
+        <input
+          id="password"
+          name="password"
+          type="password"
+          required
+          [(ngModel)]="password"
+          class="w-full rounded-xl border border-slate-700 bg-slate-950 px-4 py-3 text-sm text-white outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
+          placeholder="Enter your password"
+        />
+      </div>
+
+      @if (errorMessage) {
+        <div
+          class="rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-300"
+        >
+          {{ errorMessage }}
+        </div>
+      }
+
+      <button
+        type="submit"
+        [disabled]="isLoading() || !registerForm.form.valid"
+        class="flex w-full items-center justify-center rounded-xl bg-blue-600 px-4 py-3 text-sm font-semibold text-white transition hover:bg-blue-500 disabled:cursor-not-allowed disabled:opacity-50"
+      >
+        @if (isLoading()) {
+          <span>Registering...</span>
+        } @else {
+          <span>Sign Up</span>
+        }
+      </button>
+    </form>
+
+    <p class="mt-8 text-center text-sm text-slate-400">
+      Already have an account?
+      <a (click)="switchToSignIn()" class="font-medium text-blue-400 hover:text-blue-300">
+        Sign in
+      </a>
+    </p>
+  </div>
+</div>

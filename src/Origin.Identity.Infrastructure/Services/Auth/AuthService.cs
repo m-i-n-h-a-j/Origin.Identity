@@ -22,7 +22,7 @@ namespace Origin.Identity.Infrastructure.Services.Auth
 
             var user = new ApplicationUser
             {
-                UserName = request.Email,
+                UserName = request.UserName,
                 Email = request.Email,
                 FirstName = request.FirstName,
                 LastName = request.LastName,
@@ -46,7 +46,7 @@ namespace Origin.Identity.Infrastructure.Services.Auth
         public async Task<Result<AuthResponseDto>> LoginAsync(LoginRequestDto request)
         {
             var result = await signInManager.PasswordSignInAsync(
-                request.Email,
+                request.UserName,
                 request.Password,
                 isPersistent: true,
                 lockoutOnFailure: true
@@ -58,6 +58,25 @@ namespace Origin.Identity.Infrastructure.Services.Auth
             }
 
             return Result<AuthResponseDto>.Success(new AuthResponseDto());
+        }
+
+        public async Task<Result<string>> DeleteUserAsync(string id)
+        {
+            var user = await userManager.FindByIdAsync(id);
+
+            if (user is null)
+            {
+                return Result<string>.Failure("User not found");
+            }
+
+            var result = await userManager.DeleteAsync(user);
+
+            if (!result.Succeeded)
+            {
+                return Result<string>.Failure(result.Errors.ToString()!);
+            }
+
+            return Result<string>.Success("Deletion success");
         }
     }
 }

@@ -2,21 +2,23 @@
   <div class="w-full max-w-md rounded-2xl border border-slate-800 bg-slate-900/80 p-8 shadow-2xl">
     <div class="mb-8 text-center">
       <h1 class="text-3xl font-bold tracking-tight">Welcome back</h1>
-      <p class="mt-2 text-sm text-slate-400">Sign in to continue to Origin</p>
+      <p class="mt-2 text-sm text-slate-400">Sign in to continue</p>
     </div>
 
     <form class="space-y-5" (ngSubmit)="login()" #loginForm="ngForm">
       <div>
-        <label for="email" class="mb-2 block text-sm font-medium text-slate-300"> Email </label>
+        <label for="userName" class="mb-2 block text-sm font-medium text-slate-300">
+          User Name
+        </label>
 
         <input
-          id="email"
-          name="email"
-          type="email"
+          id="userName"
+          name="userName"
+          type="text"
           required
-          [(ngModel)]="email"
+          [(ngModel)]="userName"
           class="w-full rounded-xl border border-slate-700 bg-slate-950 px-4 py-3 text-sm text-white outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
-          placeholder="you@example.com"
+          placeholder="Enter your username"
         />
       </div>
 
@@ -48,6 +50,14 @@
         </div>
       }
 
+      @if (successMessage) {
+        <div
+          class="rounded-xl border border-green-500/30 bg-green-500/10 px-4 py-3 text-sm text-green-300"
+        >
+          {{ successMessage }}
+        </div>
+      }
+
       <button
         type="submit"
         [disabled]="isLoading() || !loginForm.form.valid"
@@ -63,7 +73,7 @@
 
     <p class="mt-8 text-center text-sm text-slate-400">
       Don't have an account?
-      <a routerLink="/register" class="font-medium text-blue-400 hover:text-blue-300">
+      <a (click)="switchToSignUp()" class="font-medium text-blue-400 hover:text-blue-300">
         Create one
       </a>
     </p>

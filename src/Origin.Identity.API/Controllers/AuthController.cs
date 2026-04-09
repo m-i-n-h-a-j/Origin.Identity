@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Origin.Identity.Application.Services.Auth;
 using Origin.Identity.Contracts.Auth;
 
@@ -32,6 +33,19 @@ namespace Origin.Identity.API.Controllers
             }
 
             return Results.Ok(result.Value);
+        }
+
+        [HttpDelete("users/{id}")]
+        public async Task<IResult> DeleteUser(string id)
+        {
+            var result = await authService.DeleteUserAsync(id);
+
+            if (!result.IsSuccess)
+            {
+                return Results.BadRequest(new { error = result.Error });
+            }
+
+            return Results.NoContent();
         }
     }
 }

@@ -20,11 +20,24 @@ namespace Origin.Identity.Infrastructure.DependencyInjection
             bool isDevelopment
         )
         {
-            var connectionString = configuration.GetConnectionString("DefaultConnection");
+            string? defaultConnection = configuration.GetConnectionString("DefaultConnection");
+            string? neonDbPooledConnection = configuration.GetConnectionString("NeonDbPooled");
+            string? neonDbDirectConnection = configuration.GetConnectionString("NeonDbDirect");
 
             services.AddDbContext<ApplicationIdentityDbContext>(options =>
             {
-                options.UseNpgsql(connectionString);
+                options.UseNpgsql(
+                    neonDbPooledConnection,
+                    npgsql =>
+                    {
+                        npgsql.CommandTimeout(30);
+                        npgsql.EnableRetryOnFailure(
+                            maxRetryCount: 5,
+                            maxRetryDelay: TimeSpan.FromSeconds(2),
+                            errorCodesToAdd: null
+                        );
+                    }
+                );
 
                 options.UseOpenIddict();
             });
@@ -76,8 +89,8 @@ namespace Origin.Identity.Infrastructure.DependencyInjection
                         "origin_api"
                     );
 
-                    options.SetAccessTokenLifetime(TimeSpan.FromMinutes(10));
-                    options.SetRefreshTokenLifetime(TimeSpan.FromDays(7));
+                    options.SetAccessTokenLifetime(TimeSpan.FromSeconds(5));
+                    options.SetRefreshTokenLifetime(TimeSpan.FromDays(90));
 
                     if (isDevelopment)
                     {

@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
+using Microsoft.Extensions.Configuration;
 
 namespace Origin.Identity.Infrastructure.Persistence
 {
@@ -8,16 +9,28 @@ namespace Origin.Identity.Infrastructure.Persistence
     {
         public ApplicationIdentityDbContext CreateDbContext(string[] args)
         {
+            var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+
+            IConfiguration configuration = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json", optional: false)
+                .AddJsonFile($"appsettings.{environment}.json", optional: true)
+                .AddEnvironmentVariables()
+                .Build();
+
+            string? defaultConnection = configuration.GetConnectionString("DefaultConnection");
+            string? neonDbPooledConnection = configuration.GetConnectionString("NeonDbPooled");
+            string? neonDbDirectConnection = configuration.GetConnectionString("NeonDbDirect");
+
+            var connectionString =
+                neonDbDirectConnection
+                ?? throw new InvalidOperationException(
+                    "Connection string 'IdentityDatabase' was not found."
+                );
+
             var optionsBuilder = new DbContextOptionsBuilder<ApplicationIdentityDbContext>();
 
-            //optionsBuilder.UseNpgsql(
-            //    "Host=10.1.248.10;Port=5432;Database=origin_identity;Username=postgres;Password=pgsu123#"
-            //);
-
-            optionsBuilder.UseNpgsql(
-                "Host=localhost;Port=5432;Database=origin_identity;Username=postgres;Password=postgres"
-            );
-
+            optionsBuilder.UseNpgsql(connectionString);
             optionsBuilder.UseOpenIddict();
 
             return new ApplicationIdentityDbContext(optionsBuilder.Options);
