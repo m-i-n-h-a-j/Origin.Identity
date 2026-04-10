@@ -48,7 +48,7 @@ export class ResetPasswordPage implements OnInit {
       })
       .subscribe({
         next: () => {
-          window.location.href = 'http://localhost:4200';
+          window.location.href = 'https://origin-client-sample.netlify.app';
         },
         error: (error) => {
           this.isLoading.set(false);
