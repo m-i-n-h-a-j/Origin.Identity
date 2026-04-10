@@ -106,7 +106,7 @@ namespace Origin.Identity.Infrastructure.Services.Auth
 
             string jsonPayload = JsonSerializer.Serialize(payload);
 
-            var mode = 1;
+            var mode = 2;
 
             switch (mode)
             {
