@@ -100,15 +100,35 @@ namespace Origin.Identity.Infrastructure.DependencyInjection
                     }
                     else
                     {
-                        var signingCertificate = X509CertificateLoader.LoadPkcs12FromFile(
-                            configuration["OpenIddict:SigningCertificate:Path"]!,
+                        var signingBytes = Convert.FromBase64String(
+                            File.ReadAllText(configuration["OpenIddict:SigningCertificate:Path"]!)
+                        );
+
+                        var signingCertificate = X509CertificateLoader.LoadPkcs12(
+                            signingBytes,
                             configuration["OpenIddict:SigningCertificate:Password"]
                         );
 
-                        var encryptionCertificate = X509CertificateLoader.LoadPkcs12FromFile(
-                            configuration["OpenIddict:EncryptionCertificate:Path"]!,
+                        var encryptionBytes = Convert.FromBase64String(
+                            File.ReadAllText(
+                                configuration["OpenIddict:EncryptionCertificate:Path"]!
+                            )
+                        );
+
+                        var encryptionCertificate = X509CertificateLoader.LoadPkcs12(
+                            encryptionBytes,
                             configuration["OpenIddict:EncryptionCertificate:Password"]
                         );
+
+                        // var signingCertificate = X509CertificateLoader.LoadPkcs12FromFile(
+                        //     configuration["OpenIddict:SigningCertificate:Path"]!,
+                        //     configuration["OpenIddict:SigningCertificate:Password"]
+                        // );
+
+                        // var encryptionCertificate = X509CertificateLoader.LoadPkcs12FromFile(
+                        //     configuration["OpenIddict:EncryptionCertificate:Path"]!,
+                        //     configuration["OpenIddict:EncryptionCertificate:Password"]
+                        // );
 
                         options.AddSigningCertificate(signingCertificate);
                         options.AddEncryptionCertificate(encryptionCertificate);
