@@ -4,6 +4,7 @@ using System.Text.Json;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 using Origin.Identity.Application.Common;
 using Origin.Identity.Application.Services.Auth;
 using Origin.Identity.Contracts.Auth;
@@ -97,11 +98,24 @@ namespace Origin.Identity.Infrastructure.Services.Auth
 
             var token = await userManager.GeneratePasswordResetTokenAsync(user);
 
+            string resetUrl;
+
+            if (webHostEnvironment.IsDevelopment())
+            {
+                resetUrl =
+                    $"https://localhost:7181/auth/reset-password?userId={Uri.EscapeDataString(user.Id.ToString())}&token={Uri.EscapeDataString(token)}";
+            }
+            else
+            {
+                resetUrl =
+                    $"https://origin-identity.onrender.com/auth/reset-password?userId={Uri.EscapeDataString(user.Id.ToString())}&token={Uri.EscapeDataString(token)}";
+            }
+
             var payload = new
             {
                 FirstName = user.FirstName ?? user.UserName,
                 Email = user.Email!,
-                ResetPasswordUrl = $"https://localhost:7181/auth/reset-password?userId={Uri.EscapeDataString(user.Id.ToString())}&token={Uri.EscapeDataString(token)}",
+                ResetPasswordUrl = resetUrl,
             };
 
             string jsonPayload = JsonSerializer.Serialize(payload);
