@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.DataProtection.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Origin.Identity.Infrastructure.Identity;
@@ -7,8 +8,12 @@ namespace Origin.Identity.Infrastructure.Persistence
 {
     public sealed class ApplicationIdentityDbContext(
         DbContextOptions<ApplicationIdentityDbContext> options
-    ) : IdentityDbContext<ApplicationUser, ApplicationRole, Guid>(options)
+    )
+        : IdentityDbContext<ApplicationUser, ApplicationRole, Guid>(options),
+            IDataProtectionKeyContext
     {
+        public DbSet<DataProtectionKey> DataProtectionKeys { get; set; } = null!;
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
@@ -16,6 +21,11 @@ namespace Origin.Identity.Infrastructure.Persistence
             builder.HasDefaultSchema("identity");
 
             builder.UseOpenIddict();
+
+            builder.Entity<DataProtectionKey>(entity =>
+            {
+                entity.ToTable("DataProtectionKeys");
+            });
 
             #region Identity Tables
             builder.Entity<ApplicationUser>(entity =>

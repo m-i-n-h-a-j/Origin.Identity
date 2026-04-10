@@ -38,13 +38,10 @@ namespace Origin.Identity.Infrastructure.Identity.OpenIddict
             if (apiScope is null)
             {
                 await scopeManager.CreateAsync(apiScopeDescriptor);
-
             }
             else
             {
                 await scopeManager.UpdateAsync(apiScope, apiScopeDescriptor);
-
-
             }
         }
 
