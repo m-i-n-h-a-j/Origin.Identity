@@ -34,9 +34,7 @@ builder.Services.AddAuthorization();
 
 builder.Services.Configure<ForwardedHeadersOptions>(options =>
 {
-    options.ForwardedHeaders =
-        ForwardedHeaders.XForwardedFor |
-        ForwardedHeaders.XForwardedProto;
+    options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
 
     options.KnownIPNetworks.Clear();
     options.KnownProxies.Clear();
@@ -55,17 +53,14 @@ using (var scope = app.Services.CreateScope())
     await app.Services.SeedOpenIddictAsync();
 }
 
-
-
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
     app.MapScalarApiReference();
+    app.UseHttpsRedirection();
 }
 
 var authSpaPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "auth");
-
-app.UseHttpsRedirection();
 
 app.UseCors("AllowClients");
 
@@ -98,15 +93,5 @@ app.MapWhen(
 );
 
 app.MapControllers();
-
-app.MapGet("/debug-scheme", (HttpContext context) =>
-{
-    return Results.Ok(new
-    {
-        Scheme = context.Request.Scheme,
-        Host = context.Request.Host.Value,
-        ForwardedProto = context.Request.Headers["X-Forwarded-Proto"].ToString()
-    });
-});
 
 app.Run();

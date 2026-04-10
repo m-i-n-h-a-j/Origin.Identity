@@ -66,8 +66,12 @@ namespace Origin.Identity.Infrastructure.Identity.OpenIddict
             descriptor.RedirectUris.Add(new Uri("http://localhost:4200/auth/callback"));
             descriptor.PostLogoutRedirectUris.Add(new Uri("http://localhost:4200"));
 
-            descriptor.RedirectUris.Add(new Uri("https://origin-client-sample.netlify.app/auth/callback"));
-            descriptor.PostLogoutRedirectUris.Add(new Uri("https://origin-client-sample.netlify.app"));
+            descriptor.RedirectUris.Add(
+                new Uri("https://origin-client-sample.netlify.app/auth/callback")
+            );
+            descriptor.PostLogoutRedirectUris.Add(
+                new Uri("https://origin-client-sample.netlify.app")
+            );
 
             descriptor.Permissions.UnionWith([
                 Permissions.Endpoints.Authorization,

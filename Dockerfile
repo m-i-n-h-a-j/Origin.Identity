@@ -39,8 +39,8 @@ WORKDIR /app
 
 COPY --from=publish /app/publish .
 
-ENV ASPNETCORE_URLS=http://+:10000
+ENV ASPNETCORE_URLS=http://+:8080
 
-EXPOSE 10000
+EXPOSE 8080
 
 ENTRYPOINT ["dotnet", "Origin.Identity.API.dll"]
