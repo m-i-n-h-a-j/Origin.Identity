@@ -1,13 +1,13 @@
-﻿using System.Net;
-using System.Net.Mail;
-using System.Text.Json;
-using Microsoft.AspNetCore.Hosting;
+﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Origin.Identity.Application.Common;
 using Origin.Identity.Application.Services.Auth;
 using Origin.Identity.Contracts.Auth;
 using Origin.Identity.Infrastructure.Identity;
+using System.Net;
+using System.Net.Mail;
+using System.Text.Json;
 
 namespace Origin.Identity.Infrastructure.Services.Auth
 {
@@ -111,55 +111,55 @@ namespace Origin.Identity.Infrastructure.Services.Auth
             switch (mode)
             {
                 case 1:
-                {
-                    using var client = new SmtpClient(
-                        config["Email:PSmtp:Host"],
-                        int.Parse(config["Email:PSmtp:Port"]!)
-                    )
                     {
-                        EnableSsl = false,
-                    };
+                        using var client = new SmtpClient(
+                            config["Email:PSmtp:Host"],
+                            int.Parse(config["Email:PSmtp:Port"]!)
+                        )
+                        {
+                            EnableSsl = false,
+                        };
 
-                    var mail = new MailMessage(
-                        config["Email:From"]!,
-                        user.Email!,
-                        "Reset Password",
-                        Render("password-reset", jsonPayload)
-                    )
-                    {
-                        IsBodyHtml = true,
-                    };
-                    await client.SendMailAsync(mail);
-                    break;
-                }
+                        var mail = new MailMessage(
+                            config["Email:From"]!,
+                            user.Email!,
+                            "Reset Password",
+                            Render("password-reset", jsonPayload)
+                        )
+                        {
+                            IsBodyHtml = true,
+                        };
+                        await client.SendMailAsync(mail);
+                        break;
+                    }
 
                 case 2:
-                {
-                    using var client = new SmtpClient(
-                        config["Email:GSmtp:Host"],
-                        int.Parse(config["Email:GSmtp:Port"]!)
-                    )
                     {
-                        EnableSsl = bool.Parse(config["Email:GSmtp:EnableSsl"]!),
-                        Credentials = new NetworkCredential(
-                            config["Email:GSmtp:Username"],
-                            config["Email:GSmtp:Password"]
-                        ),
-                    };
+                        using var client = new SmtpClient(
+                            config["Email:GSmtp:Host"],
+                            int.Parse(config["Email:GSmtp:Port"]!)
+                        )
+                        {
+                            EnableSsl = bool.Parse(config["Email:GSmtp:EnableSsl"]!),
+                            Credentials = new NetworkCredential(
+                                config["Email:GSmtp:Username"],
+                                config["Email:GSmtp:Password"]
+                            ),
+                        };
 
-                    var mail = new MailMessage(
-                        config["Email:From"]!,
-                        user.Email!,
-                        "Reset Password",
-                        Render("password-reset", jsonPayload)
-                    )
-                    {
-                        IsBodyHtml = true,
-                    };
-                    await client.SendMailAsync(mail);
+                        var mail = new MailMessage(
+                            config["Email:From"]!,
+                            user.Email!,
+                            "Reset Password",
+                            Render("password-reset", jsonPayload)
+                        )
+                        {
+                            IsBodyHtml = true,
+                        };
+                        await client.SendMailAsync(mail);
 
-                    break;
-                }
+                        break;
+                    }
             }
 
             return Result<string>.Success(token);

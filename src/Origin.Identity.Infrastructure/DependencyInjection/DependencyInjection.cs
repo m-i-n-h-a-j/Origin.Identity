@@ -1,5 +1,4 @@
-﻿using System.Security.Cryptography.X509Certificates;
-using Microsoft.AspNetCore.DataProtection;
+﻿using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -10,6 +9,7 @@ using Origin.Identity.Application.Services.Auth;
 using Origin.Identity.Infrastructure.Identity;
 using Origin.Identity.Infrastructure.Persistence;
 using Origin.Identity.Infrastructure.Services.Auth;
+using System.Security.Cryptography.X509Certificates;
 
 namespace Origin.Identity.Infrastructure.DependencyInjection
 {
@@ -122,16 +122,6 @@ namespace Origin.Identity.Infrastructure.DependencyInjection
                             encryptionBytes,
                             configuration["OpenIddict:EncryptionCertificate:Password"]
                         );
-
-                        // var signingCertificate = X509CertificateLoader.LoadPkcs12FromFile(
-                        //     configuration["OpenIddict:SigningCertificate:Path"]!,
-                        //     configuration["OpenIddict:SigningCertificate:Password"]
-                        // );
-
-                        // var encryptionCertificate = X509CertificateLoader.LoadPkcs12FromFile(
-                        //     configuration["OpenIddict:EncryptionCertificate:Path"]!,
-                        //     configuration["OpenIddict:EncryptionCertificate:Password"]
-                        // );
 
                         options.AddSigningCertificate(signingCertificate);
                         options.AddEncryptionCertificate(encryptionCertificate);
