@@ -50,7 +50,7 @@ if (app.Environment.IsDevelopment())
 
 var authSpaPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "auth");
 
-app.UseHttpsRedirection();
+// app.UseHttpsRedirection();
 
 app.UseCors("AllowClients");
 

@@ -1,0 +1,17 @@
+**/bin
+**/obj
+
+**/node_modules
+**/dist
+
+**/.angular
+**/.cache
+
+.gitignore
+**/.gitignore
+
+.git
+.vs
+.vscode
+
+README.md
