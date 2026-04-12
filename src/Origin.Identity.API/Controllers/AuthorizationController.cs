@@ -92,12 +92,14 @@ namespace Origin.Identity.API.Controllers
                 return Forbid();
             }
 
-            return Ok(new
-            {
-                sub = user.Id,
-                email = user.Email,
-                name = user.UserName
-            });
+            return Ok(
+                new
+                {
+                    sub = user.Id,
+                    email = user.Email,
+                    name = user.UserName,
+                }
+            );
         }
     }
 }

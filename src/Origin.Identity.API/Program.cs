@@ -16,7 +16,11 @@ builder.Services.AddCors(options =>
         policy =>
         {
             policy
-                .WithOrigins("http://localhost:4200", "https://origin-client-sample.netlify.app")
+                .WithOrigins(
+                    "http://localhost:4200",
+                    "https://origin-client-sample.netlify.app",
+                    "https://ragam-music.netlify.app"
+                )
                 .AllowAnyHeader()
                 .AllowAnyMethod()
                 .AllowCredentials();
