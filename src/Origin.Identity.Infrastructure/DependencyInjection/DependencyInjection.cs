@@ -93,8 +93,8 @@ namespace Origin.Identity.Infrastructure.DependencyInjection
                         "ragam_api"
                     );
 
-                    options.SetAccessTokenLifetime(TimeSpan.FromSeconds(5));
-                    options.SetRefreshTokenLifetime(TimeSpan.FromDays(90));
+                    options.SetAccessTokenLifetime(TimeSpan.FromMinutes(10));
+                    options.SetRefreshTokenLifetime(TimeSpan.FromDays(100));
 
                     if (isDevelopment)
                     {

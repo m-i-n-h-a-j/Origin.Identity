@@ -37,7 +37,7 @@ namespace Origin.Identity.Infrastructure.Identity.OpenIddict
                 DisplayName = "Main API Access",
             };
 
-            apiScopeDescriptor.Resources.Add("resource_server");
+            apiScopeDescriptor.Resources.Add("origin_resource_server");
 
             if (apiScope is null)
             {

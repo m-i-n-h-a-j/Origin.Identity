@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using OpenIddict.Abstractions;
@@ -44,6 +45,20 @@ namespace Origin.Identity.API.Controllers
 
             principal.SetScopes(request.GetScopes());
 
+            var resources = new List<string>();
+
+            if (principal.HasScope("ragam_api"))
+            {
+                resources.Add("ragam_resource_server");
+            }
+
+            if (principal.HasScope("origin_api"))
+            {
+                resources.Add("origin_resource_server");
+            }
+
+            principal.SetResources(resources);
+
             return SignIn(principal, OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
         }
 
@@ -59,24 +74,30 @@ namespace Origin.Identity.API.Controllers
             );
         }
 
+        [Authorize(AuthenticationSchemes = OpenIddictServerAspNetCoreDefaults.AuthenticationScheme)]
         [HttpGet("~/connect/userinfo")]
         public async Task<IActionResult> UserInfo()
         {
-            var user = await userManager.GetUserAsync(User);
+            var subject = User.FindFirst("sub")?.Value;
+
+            if (string.IsNullOrEmpty(subject))
+            {
+                return Forbid();
+            }
+
+            var user = await userManager.FindByIdAsync(subject);
 
             if (user is null)
             {
-                return Challenge(OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
+                return Forbid();
             }
 
-            return Ok(
-                new
-                {
-                    sub = user.Id,
-                    email = user.Email,
-                    name = user.UserName,
-                }
-            );
+            return Ok(new
+            {
+                sub = user.Id,
+                email = user.Email,
+                name = user.UserName
+            });
         }
     }
 }
