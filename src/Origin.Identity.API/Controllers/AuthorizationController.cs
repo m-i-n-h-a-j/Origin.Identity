@@ -98,6 +98,7 @@ namespace Origin.Identity.API.Controllers
                     sub = user.Id,
                     email = user.Email,
                     name = user.UserName,
+                    firstName = user.FirstName,
                 }
             );
         }
