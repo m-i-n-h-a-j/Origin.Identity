@@ -89,7 +89,8 @@ namespace Origin.Identity.Infrastructure.DependencyInjection
                         OpenIddictConstants.Scopes.Profile,
                         OpenIddictConstants.Scopes.Email,
                         OpenIddictConstants.Scopes.OfflineAccess,
-                        "origin_api"
+                        "origin_api",
+                        "ragam_api"
                     );
 
                     options.SetAccessTokenLifetime(TimeSpan.FromSeconds(5));
