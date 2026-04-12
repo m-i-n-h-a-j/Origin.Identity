@@ -66,6 +66,58 @@ if (app.Environment.IsDevelopment())
 
 var authSpaPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "auth");
 
+app.MapMethods(
+        "/health",
+        ["GET", "HEAD"],
+        async (HttpContext http, ApplicationIdentityDbContext db) =>
+        {
+            var start = DateTime.UtcNow;
+            if (HttpMethods.IsHead(http.Request.Method))
+            {
+                http.Response.Headers["X-Health-Status"] = "healthy";
+
+                return Results.Ok();
+            }
+
+            try
+            {
+                var beforeDb = DateTime.UtcNow;
+
+                await db.Database.ExecuteSqlRawAsync("select 1");
+
+                var afterDb = DateTime.UtcNow;
+
+                return Results.Ok(
+                    new
+                    {
+                        status = "healthy",
+                        timings = new
+                        {
+                            total_ms = (afterDb - start).TotalMilliseconds,
+                            db_call_ms = (afterDb - beforeDb).TotalMilliseconds,
+                            before_db_ms = (beforeDb - start).TotalMilliseconds,
+                        },
+                    }
+                );
+            }
+            catch (Exception ex)
+            {
+                var failedAt = DateTime.UtcNow;
+
+                return Results.Problem(
+                    title: "Unhealthy",
+                    detail: ex.Message,
+                    statusCode: StatusCodes.Status503ServiceUnavailable,
+                    extensions: new Dictionary<string, object?>
+                    {
+                        ["timings"] = new { total_ms = (failedAt - start).TotalMilliseconds },
+                    }
+                );
+            }
+        }
+    )
+    .AllowAnonymous();
+
 app.UseCors("AllowClients");
 
 app.UseAuthentication();
