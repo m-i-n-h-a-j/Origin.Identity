@@ -15,6 +15,7 @@ namespace Origin.Identity.Infrastructure.Services.Auth
     public sealed class AuthService(
         UserManager<ApplicationUser> userManager,
         SignInManager<ApplicationUser> signInManager,
+        RoleManager<ApplicationRole> roleManager,
         IWebHostEnvironment webHostEnvironment,
         IConfiguration config
     ) : IAuthService
@@ -43,6 +44,32 @@ namespace Origin.Identity.Infrastructure.Services.Auth
                 var error = string.Join(
                     Environment.NewLine,
                     createResult.Errors.Select(x => x.Description)
+                );
+
+                return Result<Guid>.Failure(error);
+            }
+
+            const string roleName = "User";
+
+            if (!await roleManager.RoleExistsAsync(roleName))
+            {
+                var roleResult = await roleManager.CreateAsync(
+                    new ApplicationRole { Name = roleName }
+                );
+
+                if (!roleResult.Succeeded)
+                {
+                    return Result<Guid>.Failure("Failed to create default role.");
+                }
+            }
+
+            var addToRoleResult = await userManager.AddToRoleAsync(user, roleName);
+
+            if (!addToRoleResult.Succeeded)
+            {
+                var error = string.Join(
+                    Environment.NewLine,
+                    addToRoleResult.Errors.Select(x => x.Description)
                 );
 
                 return Result<Guid>.Failure(error);
